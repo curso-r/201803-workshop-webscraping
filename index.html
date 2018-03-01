@@ -29,11 +29,76 @@ class: center, middle, inverse, title-slide
 
 # Quem Somos
 
+A _Curso-R_:
+- O grupo surgiu em 2015 para ministrar o curso "Programação em R: do
+casual ao avançado" no IME-USP
+- Em 2016 e 2017, ministramos novamente o curso e, depois de mais de 100 alunos
+formados, decidimos aumentar a gama e a frequência das aulas
+
+Caio:
+- Bacharelando em Ciência da Computação pelo IME-USP
+- Estagiário na Platipus Consultoria
+- Metido a designer, maníaco da organização e metade texano
+
+Fernando:
+- Bacharel e mestrando em Estatística pelo IME-USP
+- Diretor-técnico na Associação Brasileira de Jurimetria
+- Nerd, Estatístico e mágico
+
+---
+# Prólogo
+
+O termo mais apropriado para tratar de *web scraping* em portugês é "raspagem
+web", ou seja, a extração de dados provenientes de uma página online.
+
+Quando se trata de web scraping, a primeira coisa que precisamos fazer é criar
+um plano de ação. Raspar dados online não é uma ciência exata, então se não
+nos planejarmos com antecedência é bem provável que no final nosso código
+fique completamente incompreensível e irreprodutível.
+
+### Expectativa
+
+```
+dados &lt;- raspar("site.com")
+```
+
+### Realidade
+
+![](/static/commits_esaj.png)
+
+---
+# Prólogo (cont.)
+
+Por isso recomendamos sempre tentar seguir o **fluxo do web scraping**:
+
+![](/static/ciclo.png)
+
+Nós achamos que o fluxo do web scraping é a melhor forma de abordar esse conteúdo
+porque, com ele, a tarefa muitas vezes complicada e sem objetivo definido de
+raspar dados da web se torna um processo iterativo e bem delimitado que podemos
+utilizar nas mais diversas situações.
+
 ---
 # Conteúdo
 
----
-# Quando usar/não-usar web scraping
+Através de exposição, exemplos do mundo real e exercícios veremos cada passo do
+fluxo:
+
+- Como **identificar** o objeto de interesse
+
+- Como funciona uma página HTML e como **navegar** por seus elementos
+
+- O protocolo HTTP e como **replicar** seu funcionamento
+
+- Como **parsear** as páginas baixadas
+
+- Como **iterar** ao longo de muitas páginas e como salvar esses resultados
+
+- Como **validar** resultados e evitar os problemas mais comuns do web scraping
+
+- Outras tecnlogias associadas ao web scraping moderno
+
+- Captchas (quando quebrá-los e como quebrá-los)
 
 
 
@@ -44,12 +109,94 @@ class: inverse, center, middle
 # IDENTIFICAR
 
 ---
-x Introdução
-o Encontrar o que você quer (example web scraping website)
-o Texto
-o Imagem
-o PDF
-o Áudio
+# Quando usar/não-usar web scraping
+
+### Quando usar:
+
+- Quando precisamos coletar um volume grande de dados da internet
+
+### Quando não usar:
+
+- Quando temos uma forma mais simples de obter os dados (API, base de dados, etc.)
+
+- Quando os termos de uso do site não nos permitem fazer isso
+
+- Quando o `robots.txt` do site não nos permite fazer isso
+
+- Quando houver risco de derrubar ou comprometer a estabilidade do site
+
+- Quando as informações do site não são públicas
+
+---
+# Encontrar o que você quer
+
+Imagine que você precisa extair alguma informação de um site, seja ela o título
+de várias páginas da Wikipédia, os comentários de um post do Reddit ou mesmo
+os dados de países contidos no famosíssimo *Example Web Scraping Website*
+([http://example.webscraping.com/](http://example.webscraping.com/)).
+
+Se tivermos verificado que de fato não temos nenhuma outra opção e que o site
+nos permite raspá-lo, então podemos começar.
+
+O primeiro passo do fluxo consiste em **identificar** os elementos que queremos
+extrair e observar se eles se comportam da mesma forma em todas as situações
+possíveis.
+
+### Example Web Scraping Website
+
+O nosso site de exemplo será o `http://example.webscraping.com`. Para que
+possamos continuar, precisamos salvar manualmente uma página de interesse desse
+site (no caso, a home já basta).
+
+---
+# Outros casos interessantes
+
+### Extração de textos
+
+Talvez uma das tarefas mais simples de se cumprir em web scraping é extrair
+texto bem-estruturado de uma página. Os artigos da Wikipédia são ótimos para
+treinar um primeiro scraper, mas eles acabam sendo uma excessão no mundo do
+web scraping justamente por serem tão bem estruturados.
+
+Além disso, a Wikipédia possui uma API.
+
+![](/static/texto.png)
+
+
+---
+# Outros casos interessantes (cont.)
+
+### Extação de imagens
+
+Baixar imagens já uma tarefa um pouco mais complexa porque elas geralmente estão
+menos organizadas que texto e ainda por cima ocupam mais espaço.
+
+A imagem abaixo é do Reddit, que também possui uma API.
+
+![](/static/imagem.png)
+
+---
+# Outros casos interessantes (cont.)
+
+### Extração de PDFs
+
+Extrair PDFs é um pouco mais complicado do que extrair imagens porque eles
+geralmente não estão endereçados na página da mesma forma que o resto do conteúdo.
+Além disso, eles são uma das formas mais pesadas de mídia que podemos raspar.
+
+![](/static/pdf.png)
+
+---
+# Outros casos interessantes (cont.)
+
+### Extação de áudio
+
+Dificilmente temos a necessidade de baixar arquivos de áudio, mas, quando esse é
+o caso, o fluxo não muda muito em relação aos PDFs. A dificuldade aqui é em como
+tratar esses arquivos porque geralmente são escassos os métodos e bibliotecas de
+processamento de som.
+
+![](/static/audio.png)
 
 
 
