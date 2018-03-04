@@ -206,11 +206,10 @@ class: inverse, center, middle
 ---
 # HTML
 
-### Estrutura básica
-
 ![](static/html_exemplo_1.png)
 
 ---
+
 # HTML
 
 ![](static/html_exemplo_2.png)
@@ -225,11 +224,56 @@ class: inverse, center, middle
 
 ![](static/html_exemplo_3.png)
  - tags: head, meta, title, body, h1, h2, p, html.
- - argumentos: charset, style.
+ - atributos: charset, style.
 
-x HTML (div's, span e outros tags de conteúdo)
 
-x HTML (atributos)
+---
+# HTML
+
+### Um pouco de teoria:
+
+1) Todo HTML se transforma em um **DOM** (document object model) dentro do navegador.
+
+2) Esse **DOM** pode ser representado como uma árvore em que cada nó é:
+    - ou um **atributo**;
+    - ou um **texto**;
+    - ou uma **tag**;
+    - ou um **comentário**;
+
+---
+# HTML
+
+![](static/html_exemplo_tree.png)
+
+---
+# HTML
+
+Ex: coletando todas as tags `<p>`'s
+
+```{r}
+library(rvest)
+read_html("static/html_exemplo.html") %>% html_nodes("p")
+```
+
+Exercício: relacione a saída do código com o desenho de árvore. Identifique os ramos que foram selecionados.
+
+---
+# HTML
+
+Exercício: utilize as funções `html_attrs()` e `html_text()` para extrair informações dos nodes selecionados.
+
+```{r}
+library(rvest)
+read_html("static/html_exemplo.html") %>% html_nodes("p") %>% html_attrs
+```
+
+---
+# CSS
+
+
+
+---
+# CSS
 
 x CSS (estilizador de html)
 
