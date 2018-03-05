@@ -440,41 +440,206 @@ class: inverse, center, middle
 # REPLICAR
 
 ---
-# protocolo HTTP
+# Web
 
-- requests/responses
+Até agora já aprendemos que um site não passa de uma coleção de arquivos
+que os navegadores são capazes de renderizar. Entendemos também como é a
+arquitetura básica desses arquivos e como podemos extrair informações destas
+estruturas.
+
+Agora nos resta entender como funciona a rede que nos traz tais arquivos.
+Veremos que não é necessário ter um navegador para acessar um site,
+característica da qual tiraremos vantagem para poder coletar todas as
+páginas das quais precisamos.
 
 ---
-# Requests
+# Protocolo HTTP
 
-- GET
-- POST
+O HTTP (Hypertext Transfer Protocol) é um protocolo de aplicações para sistemas
+de informação distribuídos e colaborativos. Este protocolo é, no fundo, a base
+de toda a web&lt;sup&gt;*&lt;/sup&gt; pois ele permite a troca e transferência de
+arquivos hipertexto.
+
+![](static/http.png)
+
+???
+Web não é a mesma coisa que internet. A internet é uma rede mundial e
+descentralizada de computadores, enquanto a web é um protocolo que nos
+permite acessar documentos em hipertexto através da infraestrutura da
+internet
 
 ---
-# Requests
+# Métodos HTTP
+
+O protocolo HTTP na verdade é composto por diversos **métodos** que chamam
+páginas páginas hipertexto de servidores web. Os métodos mais comuns são
+`GET` e `POST`
 
 ### GET
 
+O método `GET` é o mais simples. Ele permite chamar uma página da internet e
+especificar todos os parâmetros de seu URL.
+
+
+```r
+library(httr)
+
+# GET sem nenhum parâmetro
+get_1 &lt;- GET("https://httpbin.org/get")
+
+# GET equivalente a https://httpbin.org/cookies/set?meu-cookie=1
+params &lt;- list("meu-cookie" = 1)
+get_2 &lt;- GET("https://httpbin.org/cookies/set", query = params)
+```
 
 ---
-# Requests
+# Métodos HTTP (cont.)
 
 ### POST
 
+O método `POST` é muito semelhante ao `GET`, mas ele permite enviar pacotes
+carregados de informações para a página (ao invés de apenas adicionar parâmetros
+à chamada).
+
+
+```r
+library(httr)
+
+# POST sem nenhum form
+post_1 &lt;- POST("https://httpbin.org/post")
+
+# POST equivalente a https://httpbin.org/get?show_env=1
+form &lt;- list(
+  "um-numero" = 1,
+  "uma-letra" = "a",
+  "uma-data" = "2018-01-01")
+post_2 &lt;- POST("https://httpbin.org/post", body = form)
+```
+
+???
+As chamadas POST podem ter diferentes encodings determinados pelo servidor.
+Isso é um parâmetro muito simples na chamada, mas foge do escopo desta aula.
 
 ---
 # Responses
-   - o que tem na resposta
-       - cookies
-       - html
-       - status
-       
+
+Nos últimos slides vimos chamadas HTTP, mas não vimos os seus resultados. Cada
+uma destas chamadas retorna aquilo que chamamos de **response**, uma resposta
+que contém metadados importantes e (mais relevante no nosso caso) o código HTML
+para renderizar a página requisitada.
+
+### Status
+
+Status é um verificador simples de se a chamada deu certo. Um status igual a 200
+geralmente indica que não houve nenhum erro ("OK"); 401 indica "Não Autorizado",
+404 indica "Não Encontrado", 500 indica "Erro Interno Do Servidor" e assim por
+diante.
+
+418 indica "Sou Um Bule De Chá".
+
+
+```r
+get_1$status_code
+```
+
+```
+#&gt; [1] 200
+```
+
 ---
-x Network (como que eu vejo as requests acontecendo)
-x httr (como fazer requisições em R)
-x httr exemplo: GET e POST
-x httr o que vem na resposta
-x abrir o html pra ver se deu certo
+# Responses (cont.)
+
+### Cookies
+
+Cookies são pequenos rastreadores que informam ao servidor que você passou por
+uma determinada parte do site. Eles se tornam importantes quando queremos fingir
+para o site que o nosso scraper já cumpriu um certo passo da navegação.
+
+
+```r
+get_2$cookies
+```
+
+```
+#&gt;        domain  flag path secure expiration       name value
+#&gt; 1 httpbin.org FALSE    /  FALSE       &lt;NA&gt; meu-cookie     1
+```
+
+---
+# Responses (cont.)
+
+### Content
+
+Este é o nosso objeto de interesse. Ele é o conteúdo HTML da página requisitada!
+Se usarmos `read_html()` e as funções de XML que vimos anteriormente, podemos
+começar a extrair importantes dados da página.
+
+
+```r
+read_html(post_1)
+```
+
+```
+#&gt; {xml_document}
+#&gt; &lt;html&gt;
+#&gt; [1] &lt;body&gt;&lt;p&gt;{\n  "args": {}, \n  "data": "", \n  "files": {}, \n  "form ...
+```
+
+```r
+read_html(post_2)
+```
+
+```
+#&gt; {xml_document}
+#&gt; &lt;html&gt;
+#&gt; [1] &lt;body&gt;&lt;p&gt;{\n  "args": {}, \n  "data": "", \n  "files": {}, \n  "form ...
+```
+
+???
+Notar como existe uma diferença no elemento `form` dos dois HTMLs. Isso foi
+exatamente o pacote enviado através do parâmetro `body` de `POST`.
+
+---
+# Content
+
+Talvez mais fácil do que tentar ler o HTML retornado na response seja salvar o
+HTML em um arquivo e aí abrir este arquivo. Isso nos dá uma noção muito melhor
+do que recebemos de volta e é uma parte essencial do processo do web scraping.
+
+
+```r
+post_2 &lt;- POST(
+  "https://httpbin.org/post", body = form,
+  write_disk("static/post.html", overwrite = TRUE))
+read_html("static/post.html")
+```
+
+```
+#&gt; {xml_document}
+#&gt; &lt;html&gt;
+#&gt; [1] &lt;body&gt;&lt;p&gt;{\n  "args": {}, \n  "data": "", \n  "files": {}, \n  "form ...
+```
+
+Clicando duas vezes no arquivo ou rodando a função `BROWSE()` abrimos ele em
+um navegador para que possamos investigar de perto se está tudo em ordem.
+
+
+```r
+BROWSE("static/post.html")
+```
+
+---
+# Network
+
+A última ferramenta que demonstraremos do Chrome é a função de análise de
+**networking**. Com ela podemos acompanhar todas as chamadas HTTP que são feitas
+pela página, nos permitindo analisá-las de modo a reproduzí-las através do R.
+
+### Vamos ao Chrome...
+
+???
+PROPONHO QUE AQUI PAREMOS E ANALISEMOS TODO O NETWORKING DO EXAMPLE WEBSCRAPING
+WEBSITE DE FORMA QUE TODOS JÁ CONSIGAM BAIXAR TODAS AS PÁGINAS DESEJADAS.
 
 
 
