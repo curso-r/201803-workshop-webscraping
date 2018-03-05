@@ -227,25 +227,17 @@ class: inverse, center, middle
  - tags: head, meta, title, body, h1, h2, p, html.
  - argumentos: charset, style.
 
+---
 x HTML (div's, span e outros tags de conteúdo)
-
 x HTML (atributos)
-
 x CSS (estilizador de html)
-
 x CSS (seletores)
-
 o selector gadget
-
 x outra forma de fazer seleção: XPATH
-
 x xml2 para encontrar coisas (salvar arquivo + read_html)
-
 x xml_find(_all)?
-
 x Exemplo 1:
  - Inspect Texto
-
 x Exemplo 2:
  - Inspect Imagem
 
