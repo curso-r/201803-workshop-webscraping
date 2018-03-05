@@ -235,15 +235,18 @@ class: inverse, center, middle
 1) Todo HTML se transforma em um **DOM** (document object model) dentro do navegador.
 
 2) Esse **DOM** pode ser representado como uma árvore em que cada nó é:
-    - ou um **atributo**;
-    - ou um **texto**;
-    - ou uma **tag**;
-    - ou um **comentário**;
+    - ou um **atributo**
+    - ou um **texto**
+    - ou uma **tag**
+    - ou um **comentário**
+
+3) Utiliza-se a relação de pai/filho/irmão entre os nós.
 
 ---
 # HTML
 
 ![](static/html_exemplo_tree.png)
+
 
 ---
 # HTML
@@ -267,25 +270,117 @@ library(rvest)
 read_html("static/html_exemplo.html") %>% html_nodes("p") %>% html_attrs
 ```
 
+
+---
+# HTML
+
+![](static/html_exemplo_tree_paifilho.png)
+
 ---
 # CSS
 
+CSS (Cascading Style Sheets) descrevem como os elementos HTML devem se apresentar na tela. Ele é responsável pela aparência da página.
+
+```{html}
+<p style='color: blue;'>Sou um parágrafo azul.</p>
+```
+
+O atributo `style` é uma das maneiras de mexer na aparência utilizando CSS. No exemplo,
+
+- `color` é uma **property** do CSS e 
+- `blue` é um **value** do CSS.
+
+[Existe uma lista imensa de **properties/values** de CSS](https://www.w3schools.com/cssref/default.asp).
+
+---
+# CSS
+
+A maneira mais comum de se usar CSS é por meio de um arquivo a parte `.css`.
+
+<img src="static/html_exemplo_com_css_a_parte1.png" width="90%" height="90%">
 
 
 ---
 # CSS
 
-x CSS (estilizador de html)
+A maneira mais comum de se usar CSS é por meio de um arquivo a parte `.css`.
 
-x CSS (seletores)
 
-o selector gadget
+<img src="static/html_exemplo_com_css_a_parte2.png" width="90%" height="90%">
 
-x outra forma de fazer seleção: XPATH
+
+
+---
+# CSS
+
+O CSS sabe onde deve "estilizar" por meio dos **CSS Selectors**.
+
+<img src="static/html_exemplo_com_css_a_parte3.png" width="90%" height="90%">
+
+Se os nodes forem **encontrados** pelo CSS, eles sofrerão as mudanças descritas.
+
+---
+# CSS Selectors
+
+> "OK, legal, CSS estiliza a página, mas pra que raios eu preciso saber disso para webscraping?"
+
+Em Webscraping estamos interessados em usar os **CSS Selectors** para selecionar os elementos do HTML que precisamos. O jeito com que o CSS "embeleza" a página não nos interessa aqui!
+
+No exemplo vimos três seletores:
+
+- seletor de tag (`p`)
+- seletor de classe (`.azul`)
+- seletor de id (`#meu-p-favorito`)
+
+O link abaixo possui a lista de todos os seletores:
+
+[w3schools.com/cssref/css_selectors](https://www.w3schools.com/cssref/css_selectors.asp)
+
+
+---
+# CSS Selectors
+
+No R, utilizamos os **CSS Selectors** para selecionar os nodes:
+
+```{r, eval=FALSE}
+html <- read_html("static/html_exemplo_css_a_parte.html")
+
+html %>% html_nodes("p")
+html %>% html_nodes(".azul")
+html %>% html_nodes("#meu-p-favorito")
+```
+
+---
+# CSS Selectors
+
+**Dica:** às vezes é difícil conseguir encontrar o CSS Selector que filtra exatamente o que queremos. Uma ferramenta útil é o 
+
+**CSS Selector Gadget** do Chrome
+
+### Vamos ao chrome...
+
+---
+# XPATH - outra forma de fazer seleção
+
+### Apenas para conhecimento...
+
+**XPath** é uma alternativa ao **CSS Selector**. O **XPath** faz tudo o que o **CSS Selector** faz e mais um pouco, mas é raro precisar dele.
+
+O link abaixo possui a lista de todos os seletores **XPath**:
+
+[w3schools.com/xml/xpath_syntax](https://www.w3schools.com/xml/xpath_syntax.asp)
+
+
+---
 
 x xml2 para encontrar coisas (salvar arquivo + read_html)
 
 x xml_find(_all)?
+
+
+---
+# Inspect
+
 
 x Exemplo 1:
  - Inspect Texto
@@ -302,15 +397,36 @@ class: inverse, center, middle
 # REPLICAR
 
 ---
-x protocolo HTTP
-x requisições
-x exemplo de GET
-x exemplo de POST
-x respostas
+# protocolo HTTP
+
+- requests/responses
+
+---
+# Requests
+
+- GET
+- POST
+
+---
+# Requests
+
+### GET
+
+
+---
+# Requests
+
+### POST
+
+
+---
+# Responses
    - o que tem na resposta
        - cookies
        - html
        - status
+       
+---
 x Network (como que eu vejo as requests acontecendo)
 x httr (como fazer requisições em R)
 x httr exemplo: GET e POST
@@ -326,14 +442,22 @@ class: inverse, center, middle
 # PARSEAR
 
 ---
+# PARSEAR
 
-x xml2
+- Definição de "Parsear"
+
+---
+# xml2
+
 x extraindo texto
 x select tag do texto
 x xml_text
 x download de imagem
 x tidy output
-BREAK (mais ou menos por aqui começa um exemplo)
+
+---
+# BREAK (mais ou menos por aqui começa um exemplo)
+
 x example site
 o exercícios
  1. logar numa conta (fazer o POST)
