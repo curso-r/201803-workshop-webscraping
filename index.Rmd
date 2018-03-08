@@ -597,7 +597,8 @@ O site [http://example.webscraping.com/](http://example.webscraping.com/) conté
 
 Construa um `data.frame` com as colunas `pais` e `link` dos dez primeiros países que aparecem na primeira página.
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
+library(dplyr)
 url <- "http://example.webscraping.com/"
 paises <- url %>%
   GET %>%
@@ -633,16 +634,17 @@ paises <- paises %>%
 
 ### Exercício 3
 
-No navegador, inspecione o [http://example.webscraping.com/](http://example.webscraping.com/) e identifique uma tabela no corpo do site. Em seguida, utilize a função `html_table()` e compare o resultado com o observado no inspetor. Qual conteúdo a função devolveu: tag, texto ou atributos?
+No navegador, inspecione o [http://example.webscraping.com/](http://example.webscraping.com/) e identifique uma tabela no corpo do site. Em seguida, utilize a função `html_table()` do pacote `rvest` e compare o resultado com o observado no inspetor. Qual conteúdo a função devolveu: tag, texto ou atributos?
 
 ---
 # PARSEAR
 
 ### Exercício 3 - GABARITO
 
-No navegador, inspecione o [http://example.webscraping.com/](http://example.webscraping.com/) e identifique uma tabela no corpo do site. Em seguida, utilize a função `html_table()` e compare o resultado com o observado no inspetor. Qual conteúdo a função devolveu: tag, texto ou atributos?
+No navegador, inspecione o [http://example.webscraping.com/](http://example.webscraping.com/) e identifique uma tabela no corpo do site. Em seguida, utilize a função `html_table()` do pacote `rvest` e compare o resultado com o observado no inspetor. Qual conteúdo a função devolveu: tag, texto ou atributos?
 
 ```{r}
+library(rvest)
 tabela <- url %>%
   GET() %>%
   read_html %>%
@@ -682,30 +684,39 @@ OBS: No caso o conteúdo era um `png`, por isso utilizamos o `writePNG()` pra gu
 ---
 # Pacote httr
 
-Até aqui o pacote httr já nos ajudou muito.
+Até aqui o pacote httr já nos ajudou muito. Foi ele que fez a ponte de comunicação entre nossas requisições e as respectivas respostas.
 
-- Finalidade: mexer com requisições e respostas HTTP.
+- Finalidade: ferramentas para mexer com requisições/respostas HTTP e URLs.
 - Principais funções: GET, POST, content, cookies, write_disk, status_code.
 
-Exercício: explore por cima a lista de todas as funções do `httr`. Tente achar uma função que o professor não saiba para ferrar com ele.
+Exercício: explore por cima a lista de todas as funções do `httr`. Encontre uma função que o professor não saiba para ferrar com ele.
+
 
 ---
 # Pacote xml2
 
-x extraindo texto
-x select tag do texto
-x xml_text
-x download de imagem
-x tidy output
+O pacote xml2 também apareceu frequentemente. Uma vez com o HTML em mãos, é a ele que recorremos para extrair as informações que precisamos.
+
+- Finalidade: interface simples e consistente para trabalhar com HTML/XML.
+- Principais funções: read_html, xml_find_all, xml_attrs, xml_text, xml_children, xml_parents, xml_siblings
+
+Exercício: explore por cima a lista de todas as funções do `xml2`. Encontre uma função que o professor não saiba para ferrar com ele.
 
 ---
-# BREAK (mais ou menos por aqui começa um exemplo)
+# Tidy Output
 
-x example site
-o exercícios
- 1. logar numa conta (fazer o POST)
- 2. baixar a página de andorra
- 3. extrair os dados de andorra numa tabela
+---
+# BREAK (15 minutos)
+
+---
+# Mão na Massa I
+
+- example site
+
+- exercícios
+    1. logar numa conta (fazer o POST)
+    2. baixar a página de andorra
+    3. extrair os dados de andorra numa tabela
 
 
 
