@@ -541,6 +541,18 @@ BROWSE("static/post.html")
 ```
 
 ---
+# Content
+
+### Vale a pena saber...
+
+O `content` de uma `response` pode ser virtualmente qualquer tipo de arquivo. Geralmente é um HTML e por isso usamos a função `read_html()` para acessar o conteúdo, mas usa-se a função `httr::content()` para acessar os contents de modo geral.
+
+```{r, eval=FALSE}
+httr::content(post_1)
+```
+
+
+---
 # Network
 
 A última ferramenta que demonstraremos do Chrome é a função de análise de
@@ -586,7 +598,8 @@ O site [http://example.webscraping.com/](http://example.webscraping.com/) conté
 Construa um `data.frame` com as colunas `pais` e `link` dos dez primeiros países que aparecem na primeira página.
 
 ```{r}
-paises <- "http://example.webscraping.com/" %>%
+url <- "http://example.webscraping.com/"
+paises <- url %>%
   GET %>%
   read_html %>%
   xml_find_all('//table//a') %>%
@@ -630,7 +643,7 @@ No navegador, inspecione o [http://example.webscraping.com/](http://example.webs
 No navegador, inspecione o [http://example.webscraping.com/](http://example.webscraping.com/) e identifique uma tabela no corpo do site. Em seguida, utilize a função `html_table()` e compare o resultado com o observado no inspetor. Qual conteúdo a função devolveu: tag, texto ou atributos?
 
 ```{r}
-tabela <- "http://example.webscraping.com/" %>%
+tabela <- url %>%
   GET() %>%
   read_html %>%
   html_table()
@@ -639,7 +652,45 @@ tabela <- "http://example.webscraping.com/" %>%
 O `html_table()` retorna o texto das células.
 
 ---
-# xml2
+# Download
+
+Dentro da sua request (POST ou GET) use a função `write_disc()`. Por meio desta função você especifica que você gostaria de guardar o conteúdo (`content`) da resposta (`response`) em um arquivo externo.
+
+Exemplo: baixando a imagem de uma bandeira.
+
+```{r}
+url_img <- paste0(url, paises$img_src[1])
+url_img
+
+img <- GET(url_img, write_disk("teste.png", overwrite = TRUE))
+```
+
+---
+# Download
+
+Também há a possibilidade de salvar um `content` a qualquer momento.
+
+```{r}
+img <- GET(url_img)
+
+img %>% httr::content() %>% png::writePNG("teste2.png")
+```
+
+A função `content` retorna o conteúdo de uma dada `response`. 
+OBS: No caso o conteúdo era um `png`, por isso utilizamos o `writePNG()` pra guardar o conteúdo.
+
+---
+# Pacote httr
+
+Até aqui o pacote httr já nos ajudou muito.
+
+- Finalidade: mexer com requisições e respostas HTTP.
+- Principais funções: GET, POST, content, cookies, write_disk, status_code.
+
+Exercício: explore por cima a lista de todas as funções do `httr`. Tente achar uma função que o professor não saiba para ferrar com ele.
+
+---
+# Pacote xml2
 
 x extraindo texto
 x select tag do texto
