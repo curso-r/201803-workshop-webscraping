@@ -280,7 +280,7 @@ text
 ---
 # XPath - XML Path Language (cont.)
 
-Com `html_attrs()` podemos extrair todos os atributos de um node:
+Com `xml_attrs()` podemos extrair todos os atributos de um node:
 
 ```{r}
 xml_attrs(nodes)
@@ -565,6 +565,78 @@ class: inverse, center, middle
 # PARSEAR
 
 - Definição de "Parsear"
+
+---
+# PARSEAR
+
+### Exercício 1
+
+O site [http://example.webscraping.com/](http://example.webscraping.com/) contém uma série de links que possuem informações sobre países. 
+
+Construa um `data.frame` com as colunas `pais` e `link` dos dez primeiros países que aparecem na primeira página.
+
+
+---
+# PARSEAR
+
+### Exercício 1 - GABARITO
+
+O site [http://example.webscraping.com/](http://example.webscraping.com/) contém uma série de links que possuem informações sobre países. 
+
+Construa um `data.frame` com as colunas `pais` e `link` dos dez primeiros países que aparecem na primeira página.
+
+```{r}
+paises <- "http://example.webscraping.com/" %>%
+  GET %>%
+  read_html %>%
+  xml_find_all('//table//a') %>%
+  tibble(node = .) %>%
+  mutate(pais = xml_text(node),
+         attrs = xml_attr(node, "href"))
+```
+
+---
+# PARSEAR
+
+### Exercício 2
+
+A partir do objeto `paises` gerado no exercício 1 crie uma coluna `img_src` que guarde o atributo `src` das tags `<img>` (ele é local onde a imagem da bandeira está disponível).
+
+---
+# PARSEAR
+
+### Exercício 2 - GABARITO
+
+A partir do objeto `paises` gerado no exercício 1 crie uma coluna `img_src` que guarde o atributo `src` das tags `<img>` (ele é local onde a imagem da bandeira está disponível).
+
+
+```{r}
+paises <- paises %>%
+  mutate(img_src = xml_find_all(node, "img") %>% xml_attr("src"))
+```
+
+---
+# PARSEAR
+
+### Exercício 3
+
+No navegador, inspecione o [http://example.webscraping.com/](http://example.webscraping.com/) e identifique uma tabela no corpo do site. Em seguida, utilize a função `html_table()` e compare o resultado com o observado no inspetor. Qual conteúdo a função devolveu: tag, texto ou atributos?
+
+---
+# PARSEAR
+
+### Exercício 3 - GABARITO
+
+No navegador, inspecione o [http://example.webscraping.com/](http://example.webscraping.com/) e identifique uma tabela no corpo do site. Em seguida, utilize a função `html_table()` e compare o resultado com o observado no inspetor. Qual conteúdo a função devolveu: tag, texto ou atributos?
+
+```{r}
+tabela <- "http://example.webscraping.com/" %>%
+  GET() %>%
+  read_html %>%
+  html_table()
+```
+
+O `html_table()` retorna o texto das células.
 
 ---
 # xml2
