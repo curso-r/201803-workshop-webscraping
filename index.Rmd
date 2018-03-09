@@ -8,7 +8,7 @@ output:
     nature:
       highlightStyle: github
       highlightLines: true
-      countIncrementalSlides: false
+      countIncrementalSlides: true
 ---
 
 <!-- ### GLOBAIS ########################################################## -->
@@ -44,13 +44,12 @@ Fernando:
 ---
 # Prólogo
 
-O termo mais apropriado para tratar de *web scraping* em portugês é "raspagem
-web", ou seja, a extração de dados provenientes de uma página online.
+<!-- O termo mais apropriado para tratar de *web scraping* em portugês é "raspagem web", ou seja, a extração de dados provenientes de uma página online. -->
 
-Quando se trata de web scraping, a primeira coisa que precisamos fazer é criar
-um plano de ação. Raspar dados online não é uma ciência exata, então se não
-nos planejarmos com antecedência é bem provável que no final nosso código
-fique completamente incompreensível e irreprodutível.
+<!-- Quando se trata de web scraping, a primeira coisa que precisamos fazer é criar um plano de ação. Raspar dados online não é uma ciência exata, então se não nos planejarmos com antecedência é bem provável que no final nosso código fique completamente incompreensível e irreprodutível. -->
+
+- 
+- 
 
 ### Expectativa
 
