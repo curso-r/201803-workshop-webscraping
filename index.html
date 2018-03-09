@@ -206,6 +206,7 @@ class: inverse, center, middle
 
 
 ---
+<<<<<<< HEAD
 # HTML
 
 ### Estrutura básica
@@ -250,7 +251,231 @@ x Exemplo 1:
 
 x Exemplo 2:
  - Inspect Imagem
+=======
+# Introdução ao  HTML
 
+![](static/html_exemplo_1.png)
+
+HTML (*Hypertext Markup Language*) é uma linguagem de markup cujo uso é a
+criação de páginas web. Por trás de todo site há pelo menos um arquivo `.html`.
+
+---
+
+# Introdução ao  HTML (cont.)
+
+![](static/html_exemplo_2.png)
+
+Todo arquivo HTML pode ser dividido em seções que definirão diferentes aspectos
+da página. `head` descreve "metadados", enquanto `body` é o corpo da página.
+
+---
+# Introdução ao  HTML (cont.)
+
+![](static/html_exemplo_3.png)
+
+*Tags* (`head`, `body`, `h1`, `p`, ...) demarcam as seções e sub-seções, enquanto
+atributos (`charset`, `style`, ...) mudam como essas seções são renderizadas pelo
+navegador.
+
+---
+# Introdução ao  HTML (cont.)
+
+### Um pouco de teoria:
+
+1) Todo HTML se transforma em um **DOM** (document object model) dentro do navegador.
+
+2) Um DOM pode ser representado como uma árvore em que cada *node* é:
+- ou um **atributo**
+- ou um **texto**
+- ou uma **tag**
+- ou um **comentário**
+
+3) Utiliza-se a relação de pai/filho/irmão entre os nós.
+
+4) Para descrever a estrutura de um DOM, usa-se uma linguagem de markup chamada XML
+(*Extensible Markup Language*) que define regras para a codificação de um documento.
+
+---
+# Introdução ao  HTML (cont.)
+
+![](static/html_exemplo_tree.png)
+
+---
+# Introdução ao  HTML (cont.)
+
+![](static/html_exemplo_tree_paifilho.png)
+
+---
+# XPath - XML Path Language
+
+Exemplo: coletando todas as tags `&lt;p&gt;` (parágrafos)
+
+
+```r
+library(xml2)
+
+# Ler o HTML
+html &lt;- read_html("static/html_exemplo.html")
+
+# Coletar todos os nodes com a tag &lt;p&gt;
+nodes &lt;- xml_find_all(html, "//p")
+nodes
+```
+
+```
+#&gt; {xml_nodeset (2)}
+#&gt; [1] &lt;p&gt;Sou um parágrafo!&lt;/p&gt;
+#&gt; [2] &lt;p style="color: blue;"&gt;Sou um parágrafo azul.&lt;/p&gt;
+```
+
+```r
+# Extrair o texto contido em cada um dos nodes
+text &lt;- xml_text(nodes)
+text
+```
+
+```
+#&gt; [1] "Sou um parágrafo!"      "Sou um parágrafo azul."
+```
+
+---
+# XPath - XML Path Language (cont.)
+
+Com `xml_attrs()` podemos extrair todos os atributos de um node:
+
+
+```r
+xml_attrs(nodes)
+```
+
+```
+#&gt; [[1]]
+#&gt; named character(0)
+#&gt; 
+#&gt; [[2]]
+#&gt;          style 
+#&gt; "color: blue;"
+```
+
+Já com `xml_children()`, `xml_parents()` e `xml_siblings()` podemos acessar a
+estrutura de parentesco dos nós:
+
+
+```r
+body &lt;- xml_find_all(html, "body")
+xml_siblings(body)
+```
+
+```
+#&gt; {xml_nodeset (1)}
+#&gt; [1] &lt;head&gt;\n&lt;meta http-equiv="Content-Type" content="text/html; charset= ...
+```
+
+---
+# CSS
+
+CSS (Cascading Style Sheets) descrevem como os elementos HTML devem se
+apresentar na tela. Ele é responsável pela aparência da página.
+
+
+```html
+&lt;p style='color: blue;'&gt;Sou um parágrafo azul.&lt;/p&gt;
+```
+
+O atributo `style` é uma das maneiras de mexer na aparência utilizando CSS. No
+exemplo,
+
+- `color` é uma **property** do CSS e 
+- `blue` é um **value** do CSS.
+
+Para associar esses pares **properties/values** aos elementos de um DOM, existe
+uma ferramenta chamada **CSS selectors**. Assim como fazemos com XML, podemos
+usar esses seletores (através do pacote `rvest`) para extrair os nós de uma
+página HTML.
+
+---
+# CSS (cont.)
+
+Abaixo vemos um `.html` e um `.css` que é usado para estilizar o primeiro. Se os
+nós indicados forem encontrados pelos seletores do CSS, então eles sofrerão
+as mudanças indicadas.
+
+![](static/html_exemplo_com_css_a_parte3.png)
+
+---
+# Seletores CSS vs. XPath
+
+&gt; "OK, legal, podemos usar o CSS e o XPath para encontrar nós em um página, mas
+por que usar um ou outro"
+
+A grande vantagem do XPath é permitir que acessemos os filhos, pais e irmãos de um
+nó. De fato os seletores CSS são mais simples, mas eles também são mais limitados.
+
+O bom é que se tivermos os seletores CSS, podemos transformá-los sem muita
+dificuldade em um query XPath:
+
+- Seletor de tag: `p` = `//p`
+- Seletor de classe: `.azul` = `//*[@class='azul']`
+- Seletor de id: `#meu-p-favorito` = `//*[@id='meu-p-favorito']`
+
+Além disso, a maior parte das ferramentas que utilizaremos ao longo do processo
+trabalham preferencialmente com XPath.
+
+---
+# Seletores CSS vs. XPath (cont.)
+
+>>>>>>> 82a295ad7731ae3600a6a73bee5e14ab9bf9962f
+
+```r
+html &lt;- read_html("static/html_exemplo_css_a_parte.html")
+xml_find_all(html, "//p")
+```
+
+```
+#&gt; {xml_nodeset (3)}
+#&gt; [1] &lt;p&gt;Sou um parágrafo normal.&lt;/p&gt;
+#&gt; [2] &lt;p class="azul"&gt;Sou um parágrafo azul.&lt;/p&gt;
+#&gt; [3] &lt;p id="meu-p-favorito" class="azul"&gt;Sou um parágrafo azul e negrito. ...
+```
+
+```r
+xml_find_all(html, "//*[@class='azul']")
+```
+
+```
+#&gt; {xml_nodeset (2)}
+#&gt; [1] &lt;p class="azul"&gt;Sou um parágrafo azul.&lt;/p&gt;
+#&gt; [2] &lt;p id="meu-p-favorito" class="azul"&gt;Sou um parágrafo azul e negrito. ...
+```
+
+Note que `//p` indica que estamos fazendo uma busca na tag `p`, enquanto `//*`
+indica que estamos fazendo uma busca em qualquer tag.
+
+---
+# Encontrando o XPath
+
+Para os iniciantes no mundo do web scraping, existem ferramentas muito
+convenientes que nos ajudam a encontrar o XPath (ou CSS Selector) de uma
+estrutura da página.
+
+A primeira delas se chama **CSS Selector Gadget**, enquanto a segunda está
+embutida no próprio Chrome.
+
+### Vamos ao Chrome...
+
+???
+PROPONHO QUE AQUI PAREMOS E ENCONTREMOS TODOS OS XPATH NECESSÁRIOS PARA
+A ANÁLISE DO EXAMPLE WEBSCRAPING WEBSITE
+
+---
+# Inspect
+
+Como acabamos de ver, a ferramenta de inspeção do Chrome (ou de qualquer outro
+navegador moderno) é nossa grande aliada na hora de encontrar os elementos
+que desejamos extrair quando raspando uma página.
+
+
+![](static/inspect.png)
 
 
 &lt;!-- ### REPLICAR ######################################################### --&gt;
@@ -260,20 +485,219 @@ class: inverse, center, middle
 # REPLICAR
 
 ---
-x protocolo HTTP
-x requisições
-x exemplo de GET
-x exemplo de POST
-x respostas
-   - o que tem na resposta
-       - cookies
-       - html
-       - status
-x Network (como que eu vejo as requests acontecendo)
-x httr (como fazer requisições em R)
-x httr exemplo: GET e POST
-x httr o que vem na resposta
-x abrir o html pra ver se deu certo
+# Web
+
+Até agora já aprendemos que um site não passa de uma coleção de arquivos
+que os navegadores são capazes de renderizar. Entendemos também como é a
+arquitetura básica desses arquivos e como podemos extrair informações destas
+estruturas.
+
+Agora nos resta entender como funciona a rede que nos traz tais arquivos.
+Veremos que não é necessário ter um navegador para acessar um site,
+característica da qual tiraremos vantagem para poder coletar todas as
+páginas das quais precisamos.
+
+---
+# Protocolo HTTP
+
+O HTTP (Hypertext Transfer Protocol) é um protocolo de aplicações para sistemas
+de informação distribuídos e colaborativos. Este protocolo é, no fundo, a base
+de toda a web&lt;sup&gt;*&lt;/sup&gt; pois ele permite a troca e transferência de
+arquivos hipertexto.
+
+![](static/http.png)
+
+???
+Web não é a mesma coisa que internet. A internet é uma rede mundial e
+descentralizada de computadores, enquanto a web é um protocolo que nos
+permite acessar documentos em hipertexto através da infraestrutura da
+internet
+
+---
+# Métodos HTTP
+
+O protocolo HTTP na verdade é composto por diversos **métodos** que chamam
+páginas páginas hipertexto de servidores web. Os métodos mais comuns são
+`GET` e `POST`
+
+### GET
+
+O método `GET` é o mais simples. Ele permite chamar uma página da internet e
+especificar todos os parâmetros de seu URL.
+
+
+```r
+library(httr)
+
+# GET sem nenhum parâmetro
+get_1 &lt;- GET("https://httpbin.org/get")
+
+# GET equivalente a https://httpbin.org/cookies/set?meu-cookie=1
+params &lt;- list("meu-cookie" = 1)
+get_2 &lt;- GET("https://httpbin.org/cookies/set", query = params)
+```
+
+---
+# Métodos HTTP (cont.)
+
+### POST
+
+O método `POST` é muito semelhante ao `GET`, mas ele permite enviar pacotes
+carregados de informações para a página (ao invés de apenas adicionar parâmetros
+à chamada).
+
+
+```r
+library(httr)
+
+# POST sem nenhum form
+post_1 &lt;- POST("https://httpbin.org/post")
+
+# POST equivalente a https://httpbin.org/get?show_env=1
+form &lt;- list(
+  "um-numero" = 1,
+  "uma-letra" = "a",
+  "uma-data" = "2018-01-01")
+post_2 &lt;- POST("https://httpbin.org/post", body = form)
+```
+
+???
+As chamadas POST podem ter diferentes encodings determinados pelo servidor.
+Isso é um parâmetro muito simples na chamada, mas foge do escopo desta aula.
+
+---
+# Responses
+
+Nos últimos slides vimos chamadas HTTP, mas não vimos os seus resultados. Cada
+uma destas chamadas retorna aquilo que chamamos de **response**, uma resposta
+que contém metadados importantes e (mais relevante no nosso caso) o código HTML
+para renderizar a página requisitada.
+
+### Status
+
+Status é um verificador simples de se a chamada deu certo. Um status igual a 200
+geralmente indica que não houve nenhum erro ("OK"); 401 indica "Não Autorizado",
+404 indica "Não Encontrado", 500 indica "Erro Interno Do Servidor" e assim por
+diante.
+
+418 indica "Sou Um Bule De Chá".
+
+
+```r
+get_1$status_code
+```
+
+```
+#&gt; [1] 200
+```
+
+---
+# Responses (cont.)
+
+### Cookies
+
+Cookies são pequenos rastreadores que informam ao servidor que você passou por
+uma determinada parte do site. Eles se tornam importantes quando queremos fingir
+para o site que o nosso scraper já cumpriu um certo passo da navegação.
+
+
+```r
+get_2$cookies
+```
+
+```
+#&gt;        domain  flag path secure expiration       name value
+#&gt; 1 httpbin.org FALSE    /  FALSE       &lt;NA&gt; meu-cookie     1
+```
+
+---
+# Responses (cont.)
+
+### Content
+
+Este é o nosso objeto de interesse. Ele é o conteúdo HTML da página requisitada!
+Se usarmos `read_html()` e as funções de XML que vimos anteriormente, podemos
+começar a extrair importantes dados da página.
+
+
+```r
+read_html(post_1)
+```
+
+```
+#&gt; {xml_document}
+#&gt; &lt;html&gt;
+#&gt; [1] &lt;body&gt;&lt;p&gt;{\n  "args": {}, \n  "data": "", \n  "files": {}, \n  "form ...
+```
+
+```r
+read_html(post_2)
+```
+
+```
+#&gt; {xml_document}
+#&gt; &lt;html&gt;
+#&gt; [1] &lt;body&gt;&lt;p&gt;{\n  "args": {}, \n  "data": "", \n  "files": {}, \n  "form ...
+```
+
+???
+Notar como existe uma diferença no elemento `form` dos dois HTMLs. Isso foi
+exatamente o pacote enviado através do parâmetro `body` de `POST`.
+
+---
+# Content
+
+Talvez mais fácil do que tentar ler o HTML retornado na response seja salvar o
+HTML em um arquivo e aí abrir este arquivo. Isso nos dá uma noção muito melhor
+do que recebemos de volta e é uma parte essencial do processo do web scraping.
+
+
+```r
+post_2 &lt;- POST(
+  "https://httpbin.org/post", body = form,
+  write_disk("static/post.html", overwrite = TRUE))
+read_html("static/post.html")
+```
+
+```
+#&gt; {xml_document}
+#&gt; &lt;html&gt;
+#&gt; [1] &lt;body&gt;&lt;p&gt;{\n  "args": {}, \n  "data": "", \n  "files": {}, \n  "form ...
+```
+
+Clicando duas vezes no arquivo ou rodando a função `BROWSE()` abrimos ele em
+um navegador para que possamos investigar de perto se está tudo em ordem.
+
+
+```r
+BROWSE("static/post.html")
+```
+
+---
+# Content
+
+### Vale a pena saber...
+
+O `content` de uma `response` pode ser virtualmente qualquer tipo de arquivo. Geralmente é um HTML e por isso usamos a função `read_html()` para acessar o conteúdo, mas usa-se a função `httr::content()` para acessar os contents de modo geral.
+
+
+```r
+httr::content(post_1)
+```
+
+
+---
+# Network
+
+A última ferramenta que demonstraremos do Chrome é a função de análise de
+**networking**. Com ela podemos acompanhar todas as chamadas HTTP que são feitas
+pela página, nos permitindo analisá-las de modo a reproduzí-las através do R.
+
+### Vamos ao Chrome...
+
+???
+PROPONHO QUE AQUI PAREMOS E ANALISEMOS TODO O NETWORKING DO EXAMPLE WEBSCRAPING
+WEBSITE DE FORMA QUE TODOS JÁ CONSIGAM BAIXAR TODAS AS PÁGINAS DESEJADAS.
 
 
 
@@ -284,19 +708,160 @@ class: inverse, center, middle
 # PARSEAR
 
 ---
+# PARSEAR
 
-x xml2
-x extraindo texto
-x select tag do texto
-x xml_text
-x download de imagem
-x tidy output
-BREAK (mais ou menos por aqui começa um exemplo)
-x example site
-o exercícios
- 1. logar numa conta (fazer o POST)
- 2. baixar a página de andorra
- 3. extrair os dados de andorra numa tabela
+- Definição de "Parsear"
+
+---
+# PARSEAR
+
+### Exercício 1
+
+O site [http://example.webscraping.com/](http://example.webscraping.com/) contém uma série de links que possuem informações sobre países. 
+
+Construa um `data.frame` com as colunas `pais` e `link` dos dez primeiros países que aparecem na primeira página.
+
+
+---
+# PARSEAR
+
+### Exercício 1 - GABARITO
+
+O site [http://example.webscraping.com/](http://example.webscraping.com/) contém uma série de links que possuem informações sobre países. 
+
+Construa um `data.frame` com as colunas `pais` e `link` dos dez primeiros países que aparecem na primeira página.
+
+
+```r
+library(dplyr)
+url &lt;- "http://example.webscraping.com/"
+paises &lt;- url %&gt;%
+  GET %&gt;%
+  read_html %&gt;%
+  xml_find_all('//table//a') %&gt;%
+  tibble(node = .) %&gt;%
+  mutate(pais = xml_text(node),
+         attrs = xml_attr(node, "href"))
+```
+
+---
+# PARSEAR
+
+### Exercício 2
+
+A partir do objeto `paises` gerado no exercício 1 crie uma coluna `img_src` que guarde o atributo `src` das tags `&lt;img&gt;` (ele é local onde a imagem da bandeira está disponível).
+
+---
+# PARSEAR
+
+### Exercício 2 - GABARITO
+
+A partir do objeto `paises` gerado no exercício 1 crie uma coluna `img_src` que guarde o atributo `src` das tags `&lt;img&gt;` (ele é local onde a imagem da bandeira está disponível).
+
+
+
+```r
+paises &lt;- paises %&gt;%
+  mutate(img_src = xml_find_all(node, "img") %&gt;% xml_attr("src"))
+```
+
+---
+# PARSEAR
+
+### Exercício 3
+
+No navegador, inspecione o [http://example.webscraping.com/](http://example.webscraping.com/) e identifique uma tabela no corpo do site. Em seguida, utilize a função `html_table()` do pacote `rvest` e compare o resultado com o observado no inspetor. Qual conteúdo a função devolveu: tag, texto ou atributos?
+
+---
+# PARSEAR
+
+### Exercício 3 - GABARITO
+
+No navegador, inspecione o [http://example.webscraping.com/](http://example.webscraping.com/) e identifique uma tabela no corpo do site. Em seguida, utilize a função `html_table()` do pacote `rvest` e compare o resultado com o observado no inspetor. Qual conteúdo a função devolveu: tag, texto ou atributos?
+
+
+```r
+library(rvest)
+tabela &lt;- url %&gt;%
+  GET() %&gt;%
+  read_html %&gt;%
+  html_table()
+```
+
+O `html_table()` retorna o texto das células.
+
+---
+# Download
+
+Dentro da sua request (POST ou GET) use a função `write_disc()`. Por meio desta função você especifica que você gostaria de guardar o conteúdo (`content`) da resposta (`response`) em um arquivo externo.
+
+Exemplo: baixando a imagem de uma bandeira.
+
+
+```r
+url_img &lt;- paste0(url, paises$img_src[1])
+url_img
+```
+
+```
+#&gt; [1] "http://example.webscraping.com//places/static/images/flags/af.png"
+```
+
+```r
+img &lt;- GET(url_img, write_disk("teste.png", overwrite = TRUE))
+```
+
+---
+# Download
+
+Também há a possibilidade de salvar um `content` a qualquer momento.
+
+
+```r
+img &lt;- GET(url_img)
+
+img %&gt;% httr::content() %&gt;% png::writePNG("teste2.png")
+```
+
+A função `content` retorna o conteúdo de uma dada `response`. 
+OBS: No caso o conteúdo era um `png`, por isso utilizamos o `writePNG()` pra guardar o conteúdo.
+
+---
+# Pacote httr
+
+Até aqui o pacote httr já nos ajudou muito. Foi ele que fez a ponte de comunicação entre nossas requisições e as respectivas respostas.
+
+- Finalidade: ferramentas para mexer com requisições/respostas HTTP e URLs.
+- Principais funções: GET, POST, content, cookies, write_disk, status_code.
+
+Exercício: explore por cima a lista de todas as funções do `httr`. Encontre uma função que o professor não saiba para ferrar com ele.
+
+
+---
+# Pacote xml2
+
+O pacote xml2 também apareceu frequentemente. Uma vez com o HTML em mãos, é a ele que recorremos para extrair as informações que precisamos.
+
+- Finalidade: interface simples e consistente para trabalhar com HTML/XML.
+- Principais funções: read_html, xml_find_all, xml_attrs, xml_text, xml_children, xml_parents, xml_siblings
+
+Exercício: explore por cima a lista de todas as funções do `xml2`. Encontre uma função que o professor não saiba para ferrar com ele.
+
+---
+# Tidy Output
+
+---
+# BREAK (15 minutos)
+
+---
+# Mão na Massa I
+
+- example site
+
+- exercícios
+    1. logar numa conta (fazer o POST)
+    2. baixar a página de andorra
+    3. extrair os dados de andorra numa tabela
 
 
 
