@@ -44,12 +44,9 @@ Fernando:
 ---
 # Prólogo
 
-<!-- O termo mais apropriado para tratar de *web scraping* em portugês é "raspagem web", ou seja, a extração de dados provenientes de uma página online. -->
+O termo mais apropriado para tratar de *web scraping* em portugês é "raspagem web", ou seja, a extração de dados provenientes de uma página online.
 
-<!-- Quando se trata de web scraping, a primeira coisa que precisamos fazer é criar um plano de ação. Raspar dados online não é uma ciência exata, então se não nos planejarmos com antecedência é bem provável que no final nosso código fique completamente incompreensível e irreprodutível. -->
-
-- 
-- 
+Quando se trata de web scraping, a primeira coisa que precisamos fazer é criar um plano de ação. Raspar dados online não é uma ciência exata, então se não nos planejarmos com antecedência é bem provável que no final nosso código fique completamente incompreensível e irreprodutível.
 
 ### Expectativa
 
@@ -690,7 +687,6 @@ Até aqui o pacote httr já nos ajudou muito. Foi ele que fez a ponte de comunic
 
 Exercício: explore por cima a lista de todas as funções do `httr`. Encontre uma função que o professor não saiba para ferrar com ele.
 
-
 ---
 # Pacote xml2
 
@@ -704,20 +700,156 @@ Exercício: explore por cima a lista de todas as funções do `xml2`. Encontre u
 ---
 # Tidy Output
 
+Até o momento apenas extraímos o conteúdo das páginas e aprendemos a baixa-las, mas saber deixar esse conteúdo arrumadinho também é muito importante. Uma tabela em `html` extraída com `html_table` é muito legal, mas existem jeitos mais legais de guardar informação.
+
 ---
+
+# Existem vários jeitos de guardar a mesma informação
+
+## Jeito 1
+
+```{r, eval = FALSE}
+preg <- read.csv("preg.csv", stringsAsFactors = FALSE)
+preg
+#>           nome      reais    dolares
+#> 1         João         NA         18
+#> 2        Maria          4          1
+#> 3        Pedro          6          7
+```
+
+---
+
+# Existem vários jeitos de guardar a mesma informação
+
+## Jeito 1
+
+```{r, eval = FALSE}
+preg <- read.csv("preg.csv", stringsAsFactors = FALSE)
+preg
+#>           nome      reais    dolares 
+#> 1         João         NA         18    
+#> 2        Maria          4          1    
+#> 3        Pedro          6          7    
+```
+
+## Jeito 2
+
+```{r, eval = FALSE}
+#>       moeda       João    Maria        Pedro
+#> 1     reais         NA        4            6
+#> 2   dolares         18        1            7
+```
+
+---
+
+# `Tidy` data
+
+Toda tabela é um conjunto de **valores** e, por sua vez, cada **valor** pertence a uma variável e a uma observação.
+
+---
+
+# `Tidy` data
+
+Toda tabela é um conjunto de **valores** e, por sua vez, cada **valor** pertence a uma **variável** e a uma **observação**.
+
+1. **observações** são as entidades de onde se tomam medidas, como por exemplo as pessoas da nossa tabela.
+2. **variáveis** são tipos de medidas que podem ser extraídas de uma observação
+
+```{r, eval = FALSE}
+#>           nome     moeda  quantidade
+#> 1        Maria     reais           4
+#> 2        Maria     dolares         1
+#> 3         João     reais          NA
+#> 4         João     dolares        18
+#> 5        Pedro     reais           6
+#> 6        Pedro     dolares         7
+```
+
+---
+
+# `Tidy` data
+
+Uma base é dita `tidy` quando:
+
+1. Cada **variável** forma uma coluna.
+2. Cada **observação** forma uma linha.
+3. Cada tipo de observação forma uma tabela
+
+---
+
+# `Tidy` data
+
+Uma base é dita `tidy` quando:
+
+1. Cada **variável** forma uma coluna.
+2. Cada **observação** forma uma linha.
+3. Cada tipo de observação forma uma tabela
+
+## Tipo comum de base bagunçada
+```{r, eval = FALSE}
+#>    religion      `<$10k` `$10-20k` `$20-30k` `$30-40k` `$40-50k` `$50-75k`
+#>    <chr>           <int>     <int>     <int>     <int>     <int>     <int>
+#>  1 Agnostic           27        34        60        81        76       137
+#>  2 Atheist            12        27        37        52        35        70
+#>  3 Buddhist           27        21        30        34        33        58
+#>  4 Catholic          418       617       732       670       638      1116
+#>  6 Evangelical …     575       869      1064       982       881      1486
+#> # ... with 8 more rows, and 4 more variables: `$75-100k` <int>,
+#> #   `$100-150k` <int>, `>150k` <int>, `Don't know/refused` <int>
+```
+---
+
+# `Tidy` data
+
+Versão arrumada:
+
+```{r}
+#>    religion                income frequency
+#>    <chr>                   <chr>      <int>
+#>  1 Agnostic                <$10k         27
+#>  2 Atheist                 <$10k         12
+#>  3 Buddhist                <$10k         27
+#>  4 Catholic                <$10k        418
+#>  5 Don’t know/refused      <$10k         15
+#>  6 Evangelical Prot        <$10k        575
+```
+
+---
+class: inverse, center, middle
 # BREAK (15 minutos)
 
 ---
 # Mão na Massa I
 
-- example site
+Exercícios: 
 
-- exercícios
-    1. logar numa conta (fazer o POST)
-    2. baixar a página de andorra
-    3. extrair os dados de andorra numa tabela
+1. Crie uma conta manualmente e depois construa uma função para se logar.
+2. Faça uma requisição que baixa a página de Andorra.
+3. Extraia os dados de andorra numa tabela `tidy`.
 
+---
 
+# Gabarito Exercício 1
+
+```{r}
+
+```
+
+---
+
+# Gabarito Exercício 2
+
+```{r}
+
+```
+
+---
+
+# Gabarito Exercício 3
+
+```{r}
+
+```
 
 <!-- ### ITERAR ########################################################### -->
 
@@ -726,22 +858,117 @@ class: inverse, center, middle
 # ITERAR
 
 ---
-x baixar html
-x salvar tidy output
-x carefully
-x walk    
-o exercício
- 1. baixe as páginas de todos os países
- IP BLOCK (os caras vão ter que dar ip 1)
-TALVEZ OUTRO (OU O PRIMEIRO) BREAK POSSA ACONTECER AQUI
 
+# ITERAR
+
+- Definição de **ITERAR**
+
+---
+
+# Salvar `Tidy` output
+
+Vale a pena extrair as coisas no format `tidy` por vários motivos.
+
+---
+
+# Salvar `Tidy` output
+
+Vale a pena extrair as coisas no format `tidy` por vários motivos.
+
+1. Vai ser mais fácil analisar os dados.
+
+---
+
+# Salvar `Tidy` output
+
+Vale a pena extrair as coisas no format `tidy` por vários motivos.
+
+1. Vai ser mais fácil analisar os dados.
+**2.** Vai ser mais fácil juntar os dados. 
+
+Mas também existem outros cuidados que você pode ter na hora de repetir uma requisição várias vezes:
+
+---
+
+# Salvar `Tidy` output
+
+Vale a pena extrair as coisas no format `tidy` por vários motivos.
+
+1. Vai ser mais fácil analisar os dados.
+**2.** Vai ser mais fácil juntar os dados. 
+
+Mas também existem outros cuidados que você pode ter na hora de repetir uma requisição várias vezes:
+
+1. Salve resultados parciais.
+2. Deixe tudo o mais `tidy` o possível.
+3. Use a função `carefully`.
+
+---
+
+# Iteração - Básico
+
+Existem algumas maneiras de iterar uma função que faz _scraping_
+
+1. Funções como `purrr::walk`, `sapply`, etc
+    - Não monta outra função, mas também não paraleliza nem trata erros
+
+--
+
+2. `for` e `while`
+      - Lida um pouco melhor com erros, mas vai precisar de outros pacotes para paralelizar
+
+---
+
+# EXEMPLO
+
+---
+
+# `carefully`
+
+Web scraping é difícil porque, lá no fundo, estamos fazendo uma engenharia reversa...
+
+--
+
+...e fazendo isso **MUITA** coisa pode dar errado.
+
+--
+
+Para remediar isso, criamos uma função que faz três coisas:
+
+1. Itera o mesmo resultado várias vezes (vetoriza)
+2. Não trava a função se der erro
+3. Paraleliza
+
+---
+
+# `carefully` | Exemplo
+
+```{r, erro = FALSE, warning=FALSE, message = FALSE}
+library(abjutils)
+
+pad <- function(str, b = "", a = "") { paste0(b, str, a) }
+
+# Create wrapped version of pad() that executes over 4 cores,
+# captures errors, and prints its current iteration with a
+# probability of 50%
+new_pad <- carefully(pad, p = 0.5, cores = 4)
+
+# Execute new_pad() with some sample data
+new_pad(c("asdf", "poiu", "qwer"), b = "0", a = "1")
+```
+
+---
+
+# Exercício
+
+Baixe as páginas de todos os países
 
 
 <!-- ### VALIDAR ########################################################## -->
 
 ---
 class: inverse, center, middle
-# VALIDAR
+# VALIDAR (F)
 
 ---
 x Event validation e view state (asp)
@@ -752,39 +979,18 @@ x Evitar armadilhas (catpchas, etc)
  - bloqueio de IP
  - Hackear a URL (comentar)
 
-
-
 <!-- ### MISCELÂNEA ####################################################### -->
 
 ---
 class: inverse, center, middle
-# MISCELÂNEA
+# MISCELÂNEA (C)
 
 ---
-x paralelização e distribuição
-x Interatividade
-x JS (V8, etc)
-x Selenium, phantom
-x RMouse
-
-
-
-<!-- ### CAPTCHAS ######################################################### -->
-
----
-class: inverse, center, middle
-# CAPTCHAS
-
----
-x Modelos ad hoc
+x paralelização e distribuição (mcmapply)
 x lendo a imagem no R (pacote de ler jpeg ou wtv)
 x interpretando o conteudo
 x filtrando com magick
 x tesseract
-o exercíco
- 1. faça uma conta automaticamente
-x Modelos keras
- - TODO: EXPLICA OU NÃO?
 x decryptr
 
 
