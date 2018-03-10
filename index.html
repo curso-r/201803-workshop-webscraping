@@ -3,7 +3,7 @@
   <head>
     <title>Workshop: Web Scraping em R</title>
     <meta charset="utf-8">
-    <meta name="author" content="Caio Lente + Fernando Corrêa" />
+    <meta name="author" content="Caio Lente + Fernando Corrêa + Curso-R" />
     <meta name="date" content="2018-03-10" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
@@ -13,7 +13,7 @@
 class: center, middle, inverse, title-slide
 
 # Workshop: Web Scraping em R
-### Caio Lente + Fernando Corrêa
+### Caio Lente + Fernando Corrêa + Curso-R
 ### 2018-03-10
 
 ---
@@ -56,15 +56,16 @@ um plano de ação. Raspar dados online não é uma ciência exata, então se n�
 nos planejarmos com antecedência é bem provável que no final nosso código
 fique completamente incompreensível e irreprodutível.
 
-### Expectativa
+### Expectativa vs. Realidade
 
-```
+
+```r
 dados &lt;- raspar("site.com")
 ```
 
-### Realidade
+--
 
-![](static/commits_esaj.png)
+&lt;img src="static/commits_esaj.png" width="400"&gt;
 
 ---
 # Prólogo (cont.)
@@ -862,31 +863,142 @@ class: inverse, center, middle
 # MISCELÂNEA
 
 ---
-x paralelização e distribuição
-x Interatividade
-x JS (V8, etc)
-x Selenium, phantom
-x RMouse
+# Paralelização e Distribuição
+
+### Paralelização
+
+Já aprendemos anteriormente a função `carefully()`, que permite a execução
+em paralelo de múltiplos downloads. Isso é possível porque, na realidade,
+o computador passa muito tempo da raspagem esperando o servidor entregar os
+arquivos necessários pra ele; esse tempo pode ser utilizado para começar
+a raspagem de outras páginas.
+
+O motor por trás da carefully é a função `mcmapply()` do pacote `parallel`:
+
+
+```r
+#&gt; Unit: seconds
+#&gt;          expr      min     mean   median      max
+#&gt;  com_paralelo 1.831117 1.913419 1.906115 2.012591
+#&gt;  sem_paralelo 3.249223 3.374113 3.375318 3.498316
+```
+
+Para tirar mais vantagem disso, podemos por exemplo alugar máquinas na GCP
+ou na AWS que tenham mais núcleos, possibilitando um grau maior de paralelismo.
+
+---
+# Paralelização e Distribuição (cont.)
+
+### Distribuição
+
+... No entando, uma única máquina com muitos núcleos de processamento terá
+um gargalo no acesso a disco, ou seja, ela não conseguirá escrever todos
+os arquivos que queremos salvar em seu disco rígido com eficiência suficiente.
+
+Por isso, podemos sincronizar várias máquinas virtuais para criar o que
+chamamos de *web scraper distribuído*.
+
+---
+### Distribuição (cont.)
+
+![](/static/distribuido.png)
+
+---
+# CAPTCHAs
+
+Quebrar CAPTCHAs muitas vezes se faz necessário quando raspando uma página da
+web. Existem muitas formas de fazer isso, desde pagar acessos para o
+*Death By Captcha* até criar os seus próprios modelos de visão computacional;
+aqui vamos falar de algumas das formas mais simples e eficazes.
+
+### Lendo a imagem
 
 
 
-&lt;!-- ### CAPTCHAS ######################################################### --&gt;
+
+```r
+pag_signup %&gt;%
+  GET() %&gt;%
+  read_html() %&gt;%
+  xml_find_first("//*[@id='recaptcha']//img") %&gt;%
+  xml_attr("src") %&gt;%
+  str_remove("data:image/png;base64,") %&gt;%
+  base64decode() %&gt;%
+  readPNG() %&gt;%
+  writePNG("static/captcha.png")
+```
+
+---
+# CATPCHAs (cont.)
+
+### Tratando imagens com magick
+
+![](/static/captcha.png)
+
+
+```r
+"static/captcha.png" %&gt;%
+  image_read() %&gt;%
+  image_transparent("green", fuzz = 20) %&gt;%
+  image_transparent("blue", fuzz = 50) %&gt;%
+  image_transparent("red", fuzz = 50) %&gt;%
+  image_transparent("white", fuzz = 50) %&gt;%
+  image_quantize(2) %&gt;%
+  image_write("static/captcha_clean.png")
+```
+
+---
+# CATPCHAs (cont.)
+
+### Lendo o texto com tesseract
+
+![](/static/captcha_clean.png)
+
+
+```r
+"static/captcha_clean.png" %&gt;%
+  image_read() %&gt;%
+  image_background("white") %&gt;% 
+  image_ocr()
+```
+
+```
+#&gt; [1] "shirt\n\n"
+```
+
+Muitas vezes pode ser necessário tratar ainda mais a imagem antes de passar o OCR.
+Para melhorar o acerto, tente aumentar, diminuir, filtrar as cores, borrar,
+desborrar, reduzir o barulho...
+
+---
+# CATPCHAs (cont.)
+
+### Decryptr
+
+Quando temos que lidar com imagens mais complicadas que as dos slides anteriores
+(principalmente quando as letras desejadas não estão em preto), pode ser que
+precisemos criar um modelo de *deep learning* para quebrar os CAPTCHAs.
+
+Ensinar modelos desse tipo está fora do escopo da aula, mas nós criamos um pacote
+que já vem carregado com alguns modelos pré-prontos. Ele também pode te ajudar a
+criar seus próprios modelos.
+
+![](static/captcha10f4c43cd3747.png)
+
+
+
+
+```r
+decrypt(arq, model = "rfb")
+```
+
+```
+#&gt; [1] "qhkdq1"
+```
 
 ---
 class: inverse, center, middle
-# CAPTCHAS
-
----
-x Modelos ad hoc
-x lendo a imagem no R (pacote de ler jpeg ou wtv)
-x interpretando o conteudo
-x filtrando com magick
-x tesseract
-o exercíco
- 1. faça uma conta automaticamente
-x Modelos keras
- - TODO: EXPLICA OU NÃO?
-x decryptr
+# OBRIGADO
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({

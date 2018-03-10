@@ -1,6 +1,6 @@
 ---
 title: "Workshop: Web Scraping em R"
-author: "Caio Lente + Fernando Corrêa"
+author: "Caio Lente + Fernando Corrêa + Curso-R"
 date: "2018-03-10"
 output:
   xaringan::moon_reader:
@@ -52,15 +52,15 @@ um plano de ação. Raspar dados online não é uma ciência exata, então se n�
 nos planejarmos com antecedência é bem provável que no final nosso código
 fique completamente incompreensível e irreprodutível.
 
-### Expectativa
+### Expectativa vs. Realidade
 
-```
+```{r, eval = FALSE}
 dados <- raspar("site.com")
 ```
 
-### Realidade
+--
 
-![](static/commits_esaj.png)
+<img src="static/commits_esaj.png" width="400">
 
 ---
 # Prólogo (cont.)
@@ -762,30 +762,136 @@ class: inverse, center, middle
 # MISCELÂNEA
 
 ---
-x paralelização e distribuição
-x Interatividade
-x JS (V8, etc)
-x Selenium, phantom
-x RMouse
+# Paralelização e Distribuição
 
+### Paralelização
 
+Já aprendemos anteriormente a função `carefully()`, que permite a execução
+em paralelo de múltiplos downloads. Isso é possível porque, na realidade,
+o computador passa muito tempo da raspagem esperando o servidor entregar os
+arquivos necessários pra ele; esse tempo pode ser utilizado para começar
+a raspagem de outras páginas.
 
-<!-- ### CAPTCHAS ######################################################### -->
+O motor por trás da carefully é a função `mcmapply()` do pacote `parallel`:
+
+```{r}
+#> Unit: seconds
+#>          expr      min     mean   median      max
+#>  com_paralelo 1.831117 1.913419 1.906115 2.012591
+#>  sem_paralelo 3.249223 3.374113 3.375318 3.498316
+```
+
+Para tirar mais vantagem disso, podemos por exemplo alugar máquinas na GCP
+ou na AWS que tenham mais núcleos, possibilitando um grau maior de paralelismo.
+
+---
+# Paralelização e Distribuição (cont.)
+
+### Distribuição
+
+... No entando, uma única máquina com muitos núcleos de processamento terá
+um gargalo no acesso a disco, ou seja, ela não conseguirá escrever todos
+os arquivos que queremos salvar em seu disco rígido com eficiência suficiente.
+
+Por isso, podemos sincronizar várias máquinas virtuais para criar o que
+chamamos de *web scraper distribuído*.
+
+---
+### Distribuição (cont.)
+
+![](/static/distribuido.png)
+
+---
+# CAPTCHAs
+
+Quebrar CAPTCHAs muitas vezes se faz necessário quando raspando uma página da
+web. Existem muitas formas de fazer isso, desde pagar acessos para o
+*Death By Captcha* até criar os seus próprios modelos de visão computacional;
+aqui vamos falar de algumas das formas mais simples e eficazes.
+
+### Lendo a imagem
+
+```{r, echo = FALSE, message = FALSE}
+library(stringr)
+library(png)
+library(magick)
+library(base64enc)
+pag_signup <- paste0(
+  "http://example.webscraping.com/",
+  "places/default/user/register?_next=/places/default/index")
+```
+
+```{r}
+pag_signup %>%
+  GET() %>%
+  read_html() %>%
+  xml_find_first("//*[@id='recaptcha']//img") %>%
+  xml_attr("src") %>%
+  str_remove("data:image/png;base64,") %>%
+  base64decode() %>%
+  readPNG() %>%
+  writePNG("static/captcha.png")
+```
+
+---
+# CATPCHAs (cont.)
+
+### Tratando imagens com magick
+
+![](/static/captcha.png)
+
+```{r}
+"static/captcha.png" %>%
+  image_read() %>%
+  image_transparent("green", fuzz = 20) %>%
+  image_transparent("blue", fuzz = 50) %>%
+  image_transparent("red", fuzz = 50) %>%
+  image_transparent("white", fuzz = 50) %>%
+  image_quantize(2) %>%
+  image_write("static/captcha_clean.png")
+```
+
+---
+# CATPCHAs (cont.)
+
+### Lendo o texto com tesseract
+
+![](/static/captcha_clean.png)
+
+```{r}
+"static/captcha_clean.png" %>%
+  image_read() %>%
+  image_background("white") %>% 
+  image_ocr()
+```
+
+Muitas vezes pode ser necessário tratar ainda mais a imagem antes de passar o OCR.
+Para melhorar o acerto, tente aumentar, diminuir, filtrar as cores, borrar,
+desborrar, reduzir o barulho...
+
+---
+# CATPCHAs (cont.)
+
+### Decryptr
+
+Quando temos que lidar com imagens mais complicadas que as dos slides anteriores
+(principalmente quando as letras desejadas não estão em preto), pode ser que
+precisemos criar um modelo de *deep learning* para quebrar os CAPTCHAs.
+
+Ensinar modelos desse tipo está fora do escopo da aula, mas nós criamos um pacote
+que já vem carregado com alguns modelos pré-prontos. Ele também pode te ajudar a
+criar seus próprios modelos.
+
+![](static/captcha10f4c43cd3747.png)
+
+```{r, echo = FALSE}
+arq <- "static/captcha10f4c43cd3747.png"
+```
+
+```{r, message=FALSE, warning=FALSE}
+decrypt(arq, model = "rfb")
+```
 
 ---
 class: inverse, center, middle
-# CAPTCHAS
-
----
-x Modelos ad hoc
-x lendo a imagem no R (pacote de ler jpeg ou wtv)
-x interpretando o conteudo
-x filtrando com magick
-x tesseract
-o exercíco
- 1. faça uma conta automaticamente
-x Modelos keras
- - TODO: EXPLICA OU NÃO?
-x decryptr
-
-
+# OBRIGADO
