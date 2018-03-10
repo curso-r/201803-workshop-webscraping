@@ -3,7 +3,7 @@
   <head>
     <title>Workshop: Web Scraping em R</title>
     <meta charset="utf-8">
-    <meta name="author" content="Caio Lente + Fernando Corrêa" />
+    <meta name="author" content="Caio Lente + Fernando Corrêa + Curso-R" />
     <meta name="date" content="2018-03-10" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
@@ -13,7 +13,7 @@
 class: center, middle, inverse, title-slide
 
 # Workshop: Web Scraping em R
-### Caio Lente + Fernando Corrêa
+### Caio Lente + Fernando Corrêa + Curso-R
 ### 2018-03-10
 
 ---
@@ -49,20 +49,19 @@ Fernando:
 # Prólogo
 
 O termo mais apropriado para tratar de *web scraping* em portugês é "raspagem web", ou seja, a extração de dados provenientes de uma página online.
-Quando se trata de web scraping, a primeira coisa que precisamos fazer é criar
-um plano de ação. Raspar dados online não é uma ciência exata, então se não
-nos planejarmos com antecedência é bem provável que no final nosso código
-fique completamente incompreensível e irreprodutível.
 
-### Expectativa
+Quando se trata de web scraping, a primeira coisa que precisamos fazer é criar um plano de ação. Raspar dados online não é uma ciência exata, então se não nos planejarmos com antecedência é bem provável que no final nosso código fique completamente incompreensível e irreprodutível.
 
-```
+### Expectativa vs. Realidade
+
+
+```r
 dados &lt;- raspar("site.com")
 ```
 
-### Realidade
+--
 
-![](static/commits_esaj.png)
+&lt;img src="static/commits_esaj.png" width="400"&gt;
 
 ---
 # Prólogo (cont.)
@@ -206,52 +205,6 @@ class: inverse, center, middle
 
 
 ---
-<<<<<<< HEAD
-# HTML
-
-### Estrutura básica
-
-![](static/html_exemplo_1.png)
-
----
-# HTML
-
-![](static/html_exemplo_2.png)
-
----
-# HTML
-
-![](static/html_exemplo_3.png)
-
----
-# HTML
-
-![](static/html_exemplo_3.png)
- - tags: head, meta, title, body, h1, h2, p, html.
- - argumentos: charset, style.
-
-x HTML (div's, span e outros tags de conteúdo)
-
-x HTML (atributos)
-
-x CSS (estilizador de html)
-
-x CSS (seletores)
-
-o selector gadget
-
-x outra forma de fazer seleção: XPATH
-
-x xml2 para encontrar coisas (salvar arquivo + read_html)
-
-x xml_find(_all)?
-
-x Exemplo 1:
- - Inspect Texto
-
-x Exemplo 2:
- - Inspect Imagem
-=======
 # Introdução ao  HTML
 
 ![](static/html_exemplo_1.png)
@@ -424,7 +377,6 @@ trabalham preferencialmente com XPath.
 ---
 # Seletores CSS vs. XPath (cont.)
 
->>>>>>> 82a295ad7731ae3600a6a73bee5e14ab9bf9962f
 
 ```r
 html &lt;- read_html("static/html_exemplo_css_a_parte.html")
@@ -477,7 +429,6 @@ que desejamos extrair quando raspando uma página.
 
 ![](static/inspect.png)
 
-
 &lt;!-- ### REPLICAR ######################################################### --&gt;
 
 ---
@@ -519,6 +470,15 @@ internet
 O protocolo HTTP na verdade é composto por diversos **métodos** que chamam
 páginas páginas hipertexto de servidores web. Os métodos mais comuns são
 `GET` e `POST`
+
+--
+
+## Pacote httr
+
+Em R, o pacote `httr` é o que faz a ponte de comunicação entre nossas requisições e as respectivas respostas.
+
+- Serve para mexer com requisições/respostas HTTP e URLs.
+- As principais funções são os métodos do protocolo `http`: GET, POST, content, cookies, write_disk, status_code.
 
 ### GET
 
@@ -616,6 +576,20 @@ get_2$cookies
 ### Content
 
 Este é o nosso objeto de interesse. Ele é o conteúdo HTML da página requisitada!
+
+--
+
+### Pacote xml2
+
+Uma vez com o HTML em mãos, é usando o pacote `xml2` que extraímos as informações que precisamos.
+
+- Esse pacote fornece uma interface simples e consistente para trabalhar com HTML/XML.
+- Suas principais funções são read_html, xml_find_all, xml_attrs, xml_text, xml_children, xml_parents, xml_siblings
+
+---
+
+## ler um html
+
 Se usarmos `read_html()` e as funções de XML que vimos anteriormente, podemos
 começar a extrair importantes dados da página.
 
@@ -708,12 +682,12 @@ class: inverse, center, middle
 # PARSEAR
 
 ---
-# PARSEAR
+# Parsear
 
 - Definição de "Parsear"
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 1
 
@@ -723,7 +697,7 @@ Construa um `data.frame` com as colunas `pais` e `link` dos dez primeiros paíse
 
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 1 - GABARITO
 
@@ -745,14 +719,14 @@ paises &lt;- url %&gt;%
 ```
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 2
 
 A partir do objeto `paises` gerado no exercício 1 crie uma coluna `img_src` que guarde o atributo `src` das tags `&lt;img&gt;` (ele é local onde a imagem da bandeira está disponível).
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 2 - GABARITO
 
@@ -766,14 +740,14 @@ paises &lt;- paises %&gt;%
 ```
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 3
 
 No navegador, inspecione o [http://example.webscraping.com/](http://example.webscraping.com/) e identifique uma tabela no corpo do site. Em seguida, utilize a função `html_table()` do pacote `rvest` e compare o resultado com o observado no inspetor. Qual conteúdo a função devolveu: tag, texto ou atributos?
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 3 - GABARITO
 
@@ -827,43 +801,111 @@ A função `content` retorna o conteúdo de uma dada `response`.
 OBS: No caso o conteúdo era um `png`, por isso utilizamos o `writePNG()` pra guardar o conteúdo.
 
 ---
-# Pacote httr
-
-Até aqui o pacote httr já nos ajudou muito. Foi ele que fez a ponte de comunicação entre nossas requisições e as respectivas respostas.
-
-- Finalidade: ferramentas para mexer com requisições/respostas HTTP e URLs.
-- Principais funções: GET, POST, content, cookies, write_disk, status_code.
-
-Exercício: explore por cima a lista de todas as funções do `httr`. Encontre uma função que o professor não saiba para ferrar com ele.
-
-
----
-# Pacote xml2
-
-O pacote xml2 também apareceu frequentemente. Uma vez com o HTML em mãos, é a ele que recorremos para extrair as informações que precisamos.
-
-- Finalidade: interface simples e consistente para trabalhar com HTML/XML.
-- Principais funções: read_html, xml_find_all, xml_attrs, xml_text, xml_children, xml_parents, xml_siblings
-
-Exercício: explore por cima a lista de todas as funções do `xml2`. Encontre uma função que o professor não saiba para ferrar com ele.
-
----
 # Tidy Output
 
+Até o momento apenas extraímos o conteúdo das páginas e aprendemos a baixa-las, mas saber deixar esse conteúdo arrumadinho também é muito importante. Uma tabela em `html` extraída com `html_table` é muito legal, mas existem jeitos mais legais de guardar informação.
+
 ---
+# Jeitos de guardar a mesma informação
+
+## Jeito 1
+
+
+```r
+preg &lt;- read.csv("preg.csv", stringsAsFactors = FALSE)
+preg
+#&gt;           nome      reais    dolares
+#&gt; 1         João         NA         18
+#&gt; 2        Maria          4          1
+#&gt; 3        Pedro          6          7
+```
+
+--
+
+## Jeito 2
+
+
+```r
+#&gt;       moeda       João    Maria        Pedro
+#&gt; 1     reais         NA        4            6
+#&gt; 2   dolares         18        1            7
+```
+
+---
+# Tidy data
+
+Toda tabela é um conjunto de **valores** e, por sua vez, cada **valor** pertence a uma **variável** e a uma **observação**.
+
+--
+
+1. **observações** são as entidades de onde se tomam medidas, como por exemplo as pessoas da nossa tabela.
+2. **variáveis** são tipos de medidas que podem ser extraídas de uma observação
+
+
+```r
+#&gt;           nome     moeda  quantidade
+#&gt; 1        Maria     reais           4
+#&gt; 2        Maria     dolares         1
+#&gt; 3         João     reais          NA
+#&gt; 4         João     dolares        18
+#&gt; 5        Pedro     reais           6
+#&gt; 6        Pedro     dolares         7
+```
+
+---
+# Tidy data
+
+Uma base é dita `tidy` quando:
+
+1. Cada **variável** forma uma coluna.
+2. Cada **observação** forma uma linha.
+3. Cada tipo de observação forma uma tabela
+
+--
+
+## Tipo comum de base bagunçada
+
+```r
+#&gt;    religion      `&lt;$10k` `$10-20k` `$20-30k` `$30-40k` `$40-50k` `$50-75k`
+#&gt;    &lt;chr&gt;           &lt;int&gt;     &lt;int&gt;     &lt;int&gt;     &lt;int&gt;     &lt;int&gt;     &lt;int&gt;
+#&gt;  1 Agnostic           27        34        60        81        76       137
+#&gt;  2 Atheist            12        27        37        52        35        70
+#&gt;  3 Buddhist           27        21        30        34        33        58
+#&gt;  4 Catholic          418       617       732       670       638      1116
+#&gt;  6 Evangelical …     575       869      1064       982       881      1486
+#&gt; # ... with 8 more rows, and 4 more variables: `$75-100k` &lt;int&gt;,
+#&gt; #   `$100-150k` &lt;int&gt;, `&gt;150k` &lt;int&gt;, `Don't know/refused` &lt;int&gt;
+```
+
+---
+# Tidy data
+
+Versão arrumada:
+
+
+```r
+#&gt;    religion                income frequency
+#&gt;    &lt;chr&gt;                   &lt;chr&gt;      &lt;int&gt;
+#&gt;  1 Agnostic                &lt;$10k         27
+#&gt;  2 Atheist                 &lt;$10k         12
+#&gt;  3 Buddhist                &lt;$10k         27
+#&gt;  4 Catholic                &lt;$10k        418
+#&gt;  5 Don’t know/refused      &lt;$10k         15
+#&gt;  6 Evangelical Prot        &lt;$10k        575
+```
+
+---
+class: inverse, center, middle
 # BREAK (15 minutos)
 
 ---
-# Mão na Massa I
+# Mão na Massa
 
-- example site
+Exercícios: 
 
-- exercícios
-    1. logar numa conta (fazer o POST)
-    2. baixar a página de andorra
-    3. extrair os dados de andorra numa tabela
-
-
+1. Crie uma conta manualmente e depois construa uma função para se logar.
+2. Faça uma requisição que baixa a página de Andorra.
+3. Extraia os dados de andorra numa tabela `tidy`.
 
 &lt;!-- ### ITERAR ########################################################### --&gt;
 
@@ -872,15 +914,141 @@ class: inverse, center, middle
 # ITERAR
 
 ---
-x baixar html
-x salvar tidy output
-x carefully
-x walk    
-o exercício
- 1. baixe as páginas de todos os países
- IP BLOCK (os caras vão ter que dar ip 1)
-TALVEZ OUTRO (OU O PRIMEIRO) BREAK POSSA ACONTECER AQUI
+# O que significa "iterar"
 
+Iterar nada mais é que do que repetir um comportamento várias vezes para parâmetros
+ligeiramente diferentes. Em computação geralmente falamos em "iterar em uma lista"
+por exemplo, mas nesse caso vamos estar iterando ao longo das páginas as quais
+desejamos baixar.
+
+
+```r
+i &lt;- 1
+v &lt;- 1:15
+while (i &lt;= length(v)) {
+  v[i] &lt;- v[i] + 5
+  i &lt;- i + 1
+}
+v
+```
+
+```
+#&gt;  [1]  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+```
+
+Precisamos fazer isso porque geralmente vamos querer que o scraper puxe várias páginas
+semelhantes de um mesmo site, logo, precisamos automatizar esse processo iterativo.
+
+---
+
+# Salvar Tidy output
+
+Vale a pena extrair as coisas no format `tidy` por vários motivos.
+
+--
+
+1. Vai ser mais fácil analisar os dados.
+
+--
+
+2. Vai ser mais fácil juntar os dados.
+
+--
+
+Mas também existem outros cuidados que você pode ter na hora de repetir uma requisição várias vezes:
+
+--
+
+1. Salve resultados parciais.
+
+2. Deixe tudo o mais `tidy` o possível.
+
+3. Use a função `carefully`.
+
+---
+# Iteração - Básico
+
+Existem algumas maneiras de iterar uma função que faz _scraping_
+
+1. Funções como `purrr::walk`, `sapply`, etc
+
+  - Não monta outra função, mas também não paraleliza nem trata erros
+
+--
+
+2. `for` e `while`
+
+  - Lida um pouco melhor com erros, mas vai precisar de outros pacotes para paralelizar
+
+---
+# Exemplo de for
+
+
+```r
+for(i in 1:10){
+  httr::GET(
+    paste0('http://example.webscraping.com/places/default/view/',i)
+  )
+}
+```
+
+O loop acima não tem muito mistério. Para cada `i` estamos estamos aplicando a
+função `GET`, mudando o URL da requisição; o resultado é que em cada passada
+do loop, vamos estar pegando uma página do índice do site.
+
+---
+
+# carefully
+
+Web scraping é difícil porque, lá no fundo, estamos fazendo uma engenharia reversa...
+
+--
+
+...e fazendo isso **MUITA** coisa pode dar errado.
+
+--
+
+Para remediar isso, criamos uma função que faz três coisas:
+
+1. Itera o mesmo resultado várias vezes (vetoriza)
+
+2. Não trava a função se der erro
+
+3. Paraleliza
+
+---
+
+# carefully (cont.)
+
+
+```r
+library(abjutils)
+
+pad &lt;- function(str, b = "", a = "") { paste0(b, str, a) }
+
+# Create wrapped version of pad() that executes over 4 cores,
+# captures errors, and prints its current iteration with a
+# probability of 50%
+new_pad &lt;- carefully(pad, p = 0.5, cores = 4)
+
+# Execute new_pad() with some sample data
+new_pad(c("asdf", "poiu", "qwer"), b = "0", a = "1")
+```
+
+```
+#&gt; # A tibble: 3 x 3
+#&gt;   input output result
+#&gt;   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; 
+#&gt; 1 asdf  0asdf1 OK    
+#&gt; 2 poiu  0poiu1 OK    
+#&gt; 3 qwer  0qwer1 OK
+```
+
+---
+
+# Exercício
+
+Baixe as páginas de todos os países
 
 
 &lt;!-- ### VALIDAR ########################################################## --&gt;
@@ -890,54 +1058,212 @@ class: inverse, center, middle
 # VALIDAR
 
 ---
-x Event validation e view state (asp)
- - TODO: PENSAR EM OUTRO EXEMPLO
-x Páginas jsp
- - TODO:  PENSAR EM OUTRO EXEMPLO
-x Evitar armadilhas (catpchas, etc)
- - bloqueio de IP
- - Hackear a URL (comentar)
+
+# Validação
+
+Um dos passos mais importantes do web scraping é verificar se a requisição que fizemos retornou exatamente o que queríamos. 
+
+--
+
+Entretanto, existem algumas características comuns a muitos websites que dificultam essa parte do trabalho
+
+--
+
+Alguns sites bloqueiam IP's, enquanto outros, construídos em `.NET` ou renderizando parte do conteúdo em `javascript`, precisam de mais do que um simples `POST` para chegar onde queremos.
+
+---
+
+# Bloqueio de IP
+
+Web scraping, por fazer um monte de requisições automáticas, é um inimigo comum dos administradores de websites. Existem várias formas de _desincentivar_ o acesso automático, e o mais comum deles é o bloqueio de IP. 
+
+--
+
+A solução mais simples para o bloqueio de IP, que resolve um problema tanto do usuário quanto do servidor, é inserir uma pausa entre um download e outro. Em R, isso é feito usando a função `sleep`
+
+--
 
 
+```r
+for(i in 1:10){
+  httr::GET(
+    paste0('http://example.webscraping.com/places/default/view/',i)
+  )
+  
+  sleep(1)
+}
+```
 
-&lt;!-- ### MISCELÂNEA ####################################################### --&gt;
+---
+# Event validation e view state
+
+Sites feitos em `.NET` (os `.aspx` espalhados pela internet) muitas vezes usam parâmetros esquisitos nas requisições `POST`
+
+--
+
+Esses parâmetros não significam nada em particular, mas são importantes para que as requisições funcionem corretamente.
+
+--
+
+Isso acontece, por exemplo [neste site](http://www.ssp.sp.gov.br/Estatistica/Pesquisa.aspx).
+
+
+```r
+view_state &lt;- r %&gt;%
+  xml2::read_html() %&gt;%
+  rvest::html_nodes("input[name='__VIEWSTATE']") %&gt;%
+  rvest::html_attr("value")
+
+event_validation &lt;- r %&gt;%
+  xml2::read_html() %&gt;%
+  rvest::html_nodes("input[name='__EVENTVALIDATION']") %&gt;%
+  rvest::html_attr("value")
+```
 
 ---
 class: inverse, center, middle
+
 # MISCELÂNEA
 
 ---
-x paralelização e distribuição
-x Interatividade
-x JS (V8, etc)
-x Selenium, phantom
-x RMouse
+# Paralelização e Distribuição
+
+### Paralelização
+
+Já aprendemos anteriormente a função `carefully()`, que permite a execução
+em paralelo de múltiplos downloads. Isso é possível porque, na realidade,
+o computador passa muito tempo da raspagem esperando o servidor entregar os
+arquivos necessários pra ele; esse tempo pode ser utilizado para começar
+a raspagem de outras páginas.
+
+O motor por trás da carefully é a função `mcmapply()` do pacote `parallel`:
+
+
+```r
+#&gt; Unit: seconds
+#&gt;          expr      min     mean   median      max
+#&gt;  com_paralelo 1.831117 1.913419 1.906115 2.012591
+#&gt;  sem_paralelo 3.249223 3.374113 3.375318 3.498316
+```
+
+Para tirar mais vantagem disso, podemos por exemplo alugar máquinas na GCP
+ou na AWS que tenham mais núcleos, possibilitando um grau maior de paralelismo.
+
+---
+# Paralelização e Distribuição (cont.)
+
+### Distribuição
+
+... No entando, uma única máquina com muitos núcleos de processamento terá
+um gargalo no acesso a disco, ou seja, ela não conseguirá escrever todos
+os arquivos que queremos salvar em seu disco rígido com eficiência suficiente.
+
+Por isso, podemos sincronizar várias máquinas virtuais para criar o que
+chamamos de *web scraper distribuído*.
+
+---
+### Distribuição (cont.)
+
+![](/static/distribuido.png)
+
+---
+# CAPTCHAs
+
+Quebrar CAPTCHAs muitas vezes se faz necessário quando raspando uma página da
+web. Existem muitas formas de fazer isso, desde pagar acessos para o
+*Death By Captcha* até criar os seus próprios modelos de visão computacional;
+aqui vamos falar de algumas das formas mais simples e eficazes.
+
+### Lendo a imagem
 
 
 
-&lt;!-- ### CAPTCHAS ######################################################### --&gt;
+
+```r
+pag_signup %&gt;%
+  GET() %&gt;%
+  read_html() %&gt;%
+  xml_find_first("//*[@id='recaptcha']//img") %&gt;%
+  xml_attr("src") %&gt;%
+  str_remove("data:image/png;base64,") %&gt;%
+  base64decode() %&gt;%
+  readPNG() %&gt;%
+  writePNG("static/captcha.png")
+```
+
+---
+# CATPCHAs (cont.)
+
+### Tratando imagens com magick
+
+![](/static/captcha.png)
+
+
+```r
+"static/captcha.png" %&gt;%
+  image_read() %&gt;%
+  image_transparent("green", fuzz = 20) %&gt;%
+  image_transparent("blue", fuzz = 50) %&gt;%
+  image_transparent("red", fuzz = 50) %&gt;%
+  image_transparent("white", fuzz = 50) %&gt;%
+  image_quantize(2) %&gt;%
+  image_write("static/captcha_clean.png")
+```
+
+---
+# CATPCHAs (cont.)
+
+### Lendo o texto com tesseract
+
+![](/static/captcha_clean.png)
+
+
+```r
+"static/captcha_clean.png" %&gt;%
+  image_read() %&gt;%
+  image_background("white") %&gt;% 
+  image_ocr()
+```
+
+```
+#&gt; [1] "spring\n\n"
+```
+
+Muitas vezes pode ser necessário tratar ainda mais a imagem antes de passar o OCR.
+Para melhorar o acerto, tente aumentar, diminuir, filtrar as cores, borrar,
+desborrar, reduzir o barulho...
+
+---
+# CATPCHAs (cont.)
+
+### Decryptr
+
+Quando temos que lidar com imagens mais complicadas que as dos slides anteriores
+(principalmente quando as letras desejadas não estão em preto), pode ser que
+precisemos criar um modelo de *deep learning* para quebrar os CAPTCHAs.
+
+Ensinar modelos desse tipo está fora do escopo da aula, mas nós criamos um pacote
+que já vem carregado com alguns modelos pré-prontos. Ele também pode te ajudar a
+criar seus próprios modelos.
+
+![](static/captcha10f4c43cd3747.png)
+
+
+
+
+```r
+decrypt(arq, model = "rfb")
+```
 
 ---
 class: inverse, center, middle
-# CAPTCHAS
-
----
-x Modelos ad hoc
-x lendo a imagem no R (pacote de ler jpeg ou wtv)
-x interpretando o conteudo
-x filtrando com magick
-x tesseract
-o exercíco
- 1. faça uma conta automaticamente
-x Modelos keras
- - TODO: EXPLICA OU NÃO?
-x decryptr
+# OBRIGADO
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false
+"countIncrementalSlides": true
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));

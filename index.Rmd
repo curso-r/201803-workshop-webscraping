@@ -592,12 +592,12 @@ class: inverse, center, middle
 # PARSEAR
 
 ---
-# PARSEAR
+# Parsear
 
 - Definição de "Parsear"
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 1
 
@@ -607,7 +607,7 @@ Construa um `data.frame` com as colunas `pais` e `link` dos dez primeiros paíse
 
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 1 - GABARITO
 
@@ -628,14 +628,14 @@ paises <- url %>%
 ```
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 2
 
 A partir do objeto `paises` gerado no exercício 1 crie uma coluna `img_src` que guarde o atributo `src` das tags `<img>` (ele é local onde a imagem da bandeira está disponível).
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 2 - GABARITO
 
@@ -648,14 +648,14 @@ paises <- paises %>%
 ```
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 3
 
 No navegador, inspecione o [http://example.webscraping.com/](http://example.webscraping.com/) e identifique uma tabela no corpo do site. Em seguida, utilize a função `html_table()` do pacote `rvest` e compare o resultado com o observado no inspetor. Qual conteúdo a função devolveu: tag, texto ou atributos?
 
 ---
-# PARSEAR
+# Parsear
 
 ### Exercício 3 - GABARITO
 
@@ -705,8 +705,7 @@ OBS: No caso o conteúdo era um `png`, por isso utilizamos o `writePNG()` pra gu
 Até o momento apenas extraímos o conteúdo das páginas e aprendemos a baixa-las, mas saber deixar esse conteúdo arrumadinho também é muito importante. Uma tabela em `html` extraída com `html_table` é muito legal, mas existem jeitos mais legais de guardar informação.
 
 ---
-
-# Existem vários jeitos de guardar a mesma informação
+# Jeitos de guardar a mesma informação
 
 ## Jeito 1
 
@@ -719,20 +718,7 @@ preg
 #> 3        Pedro          6          7
 ```
 
----
-
-# Existem vários jeitos de guardar a mesma informação
-
-## Jeito 1
-
-```{r, eval = FALSE}
-preg <- read.csv("preg.csv", stringsAsFactors = FALSE)
-preg
-#>           nome      reais    dolares 
-#> 1         João         NA         18    
-#> 2        Maria          4          1    
-#> 3        Pedro          6          7    
-```
+--
 
 ## Jeito 2
 
@@ -743,16 +729,11 @@ preg
 ```
 
 ---
-
-# `Tidy` data
-
-Toda tabela é um conjunto de **valores** e, por sua vez, cada **valor** pertence a uma variável e a uma observação.
-
----
-
-# `Tidy` data
+# Tidy data
 
 Toda tabela é um conjunto de **valores** e, por sua vez, cada **valor** pertence a uma **variável** e a uma **observação**.
+
+--
 
 1. **observações** são as entidades de onde se tomam medidas, como por exemplo as pessoas da nossa tabela.
 2. **variáveis** são tipos de medidas que podem ser extraídas de uma observação
@@ -768,24 +749,15 @@ Toda tabela é um conjunto de **valores** e, por sua vez, cada **valor** pertenc
 ```
 
 ---
-
-# `Tidy` data
-
-Uma base é dita `tidy` quando:
-
-1. Cada **variável** forma uma coluna.
-2. Cada **observação** forma uma linha.
-3. Cada tipo de observação forma uma tabela
-
----
-
-# `Tidy` data
+# Tidy data
 
 Uma base é dita `tidy` quando:
 
 1. Cada **variável** forma uma coluna.
 2. Cada **observação** forma uma linha.
 3. Cada tipo de observação forma uma tabela
+
+--
 
 ## Tipo comum de base bagunçada
 ```{r, eval = FALSE}
@@ -799,9 +771,9 @@ Uma base é dita `tidy` quando:
 #> # ... with 8 more rows, and 4 more variables: `$75-100k` <int>,
 #> #   `$100-150k` <int>, `>150k` <int>, `Don't know/refused` <int>
 ```
----
 
-# `Tidy` data
+---
+# Tidy data
 
 Versão arrumada:
 
@@ -821,15 +793,13 @@ class: inverse, center, middle
 # BREAK (15 minutos)
 
 ---
-# Mão na Massa I
+# Mão na Massa
 
 Exercícios: 
 
 1. Crie uma conta manualmente e depois construa uma função para se logar.
 2. Faça uma requisição que baixa a página de Andorra.
 3. Extraia os dados de andorra numa tabela `tidy`.
-
----
 
 <!-- ### ITERAR ########################################################### -->
 
@@ -838,68 +808,69 @@ class: inverse, center, middle
 # ITERAR
 
 ---
+# O que significa "iterar"
 
-# ITERAR
+Iterar nada mais é que do que repetir um comportamento várias vezes para parâmetros
+ligeiramente diferentes. Em computação geralmente falamos em "iterar em uma lista"
+por exemplo, mas nesse caso vamos estar iterando ao longo das páginas as quais
+desejamos baixar.
 
-- Definição de **ITERAR**
+```{r}
+i <- 1
+v <- 1:15
+while (i <= length(v)) {
+  v[i] <- v[i] + 5
+  i <- i + 1
+}
+v
+```
+
+Precisamos fazer isso porque geralmente vamos querer que o scraper puxe várias páginas
+semelhantes de um mesmo site, logo, precisamos automatizar esse processo iterativo.
 
 ---
 
-# Salvar `Tidy` output
+# Salvar Tidy output
 
 Vale a pena extrair as coisas no format `tidy` por vários motivos.
 
----
-
-# Salvar `Tidy` output
-
-Vale a pena extrair as coisas no format `tidy` por vários motivos.
+--
 
 1. Vai ser mais fácil analisar os dados.
 
----
+--
 
-# Salvar `Tidy` output
+2. Vai ser mais fácil juntar os dados.
 
-Vale a pena extrair as coisas no format `tidy` por vários motivos.
-
-1. Vai ser mais fácil analisar os dados.
-**2.** Vai ser mais fácil juntar os dados. 
+--
 
 Mas também existem outros cuidados que você pode ter na hora de repetir uma requisição várias vezes:
 
----
-
-# Salvar `Tidy` output
-
-Vale a pena extrair as coisas no format `tidy` por vários motivos.
-
-1. Vai ser mais fácil analisar os dados.
-**2.** Vai ser mais fácil juntar os dados. 
-
-Mas também existem outros cuidados que você pode ter na hora de repetir uma requisição várias vezes:
+--
 
 1. Salve resultados parciais.
+
 2. Deixe tudo o mais `tidy` o possível.
+
 3. Use a função `carefully`.
 
 ---
-
 # Iteração - Básico
 
 Existem algumas maneiras de iterar uma função que faz _scraping_
 
 1. Funções como `purrr::walk`, `sapply`, etc
-    - Não monta outra função, mas também não paraleliza nem trata erros
+
+  - Não monta outra função, mas também não paraleliza nem trata erros
 
 --
 
 2. `for` e `while`
-      - Lida um pouco melhor com erros, mas vai precisar de outros pacotes para paralelizar
+
+  - Lida um pouco melhor com erros, mas vai precisar de outros pacotes para paralelizar
 
 ---
-
-# Exemplo de `for`
+# Exemplo de for
 
 ```{r, eval = FALSE}
 
@@ -911,9 +882,13 @@ for(i in 1:10){
 
 ```
 
+O loop acima não tem muito mistério. Para cada `i` estamos estamos aplicando a
+função `GET`, mudando o URL da requisição; o resultado é que em cada passada
+do loop, vamos estar pegando uma página do índice do site.
+
 ---
 
-# `carefully`
+# carefully
 
 Web scraping é difícil porque, lá no fundo, estamos fazendo uma engenharia reversa...
 
@@ -926,12 +901,14 @@ Web scraping é difícil porque, lá no fundo, estamos fazendo uma engenharia re
 Para remediar isso, criamos uma função que faz três coisas:
 
 1. Itera o mesmo resultado várias vezes (vetoriza)
+
 2. Não trava a função se der erro
+
 3. Paraleliza
 
 ---
 
-# `carefully` | Exemplo
+# carefully (cont.)
 
 ```{r, erro = FALSE, warning=FALSE, message = FALSE}
 library(abjutils)
@@ -958,17 +935,17 @@ Baixe as páginas de todos os países
 
 ---
 class: inverse, center, middle
-# VALIDAR (F)
+# VALIDAR
 
 ---
 
 # Validação
 
-Um dos passos mais importantes do _web scraping_ é verificar se a requisição que fizemos retornou exatamente o que queríamos. 
+Um dos passos mais importantes do web scraping é verificar se a requisição que fizemos retornou exatamente o que queríamos. 
 
 --
 
-Entretanto, existem algumas características comuns a muitos _websites_ que dificultam essa parte do trabalho
+Entretanto, existem algumas características comuns a muitos websites que dificultam essa parte do trabalho
 
 --
 
@@ -976,17 +953,15 @@ Alguns sites bloqueiam IP's, enquanto outros, construídos em `.NET` ou renderiz
 
 ---
 
-# Como evitar armadilhas | Bloqueio de IP
+# Bloqueio de IP
 
-_web scraping_, por fazer um monte de requisições automáticas, é um inimigo comum dos administradores de websites. Existem várias formas de _desincentivar_ o acesso automático, e o mais comum deles é o bloqueio de IP. 
+Web scraping, por fazer um monte de requisições automáticas, é um inimigo comum dos administradores de websites. Existem várias formas de _desincentivar_ o acesso automático, e o mais comum deles é o bloqueio de IP. 
 
 --
 
 A solução mais simples para o bloqueio de IP, que resolve um problema tanto do usuário quanto do servidor, é inserir uma pausa entre um download e outro. Em R, isso é feito usando a função `sleep`
 
----
-
-# Como evitar armadilhas | Bloqueio de IP
+--
 
 ```{r, eval = FALSE}
 for(i in 1:10){
@@ -999,7 +974,6 @@ for(i in 1:10){
 ```
 
 ---
-
 # Event validation e view state
 
 Sites feitos em `.NET` (os `.aspx` espalhados pela internet) muitas vezes usam parâmetros esquisitos nas requisições `POST`
@@ -1008,9 +982,7 @@ Sites feitos em `.NET` (os `.aspx` espalhados pela internet) muitas vezes usam p
 
 Esses parâmetros não significam nada em particular, mas são importantes para que as requisições funcionem corretamente.
 
----
-
-# Event validation e view state
+--
 
 Isso acontece, por exemplo [neste site](http://www.ssp.sp.gov.br/Estatistica/Pesquisa.aspx).
 
