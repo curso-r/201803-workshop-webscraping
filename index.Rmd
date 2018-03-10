@@ -428,6 +428,7 @@ Em R, o pacote `httr` é o que faz a ponte de comunicação entre nossas requisi
 - Serve para mexer com requisições/respostas HTTP e URLs.
 - As principais funções são os métodos do protocolo `http`: GET, POST, content, cookies, write_disk, status_code.
 
+---
 ### GET
 
 O método `GET` é o mais simples. Ele permite chamar uma página da internet e
@@ -1041,7 +1042,7 @@ chamamos de *web scraper distribuído*.
 ---
 ### Distribuição (cont.)
 
-![](/static/distribuido.png)
+![](static/distribuido.png)
 
 ---
 # CAPTCHAs
@@ -1080,7 +1081,7 @@ pag_signup %>%
 
 ### Tratando imagens com magick
 
-![](/static/captcha.png)
+![](static/captcha.png)
 
 ```{r}
 "static/captcha.png" %>%
@@ -1098,7 +1099,7 @@ pag_signup %>%
 
 ### Lendo o texto com tesseract
 
-![](/static/captcha_clean.png)
+![](static/captcha_clean.png)
 
 ```{r}
 "static/captcha_clean.png" %>%
