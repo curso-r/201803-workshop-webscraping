@@ -1,6 +1,6 @@
 ---
 title: "Workshop: Web Scraping em R"
-author: "Caio Lente + Fernando Corrêa"
+author: "Caio Lente + Fernando Corrêa + Curso-R"
 date: "2018-03-10"
 output:
   xaringan::moon_reader:
@@ -48,15 +48,15 @@ O termo mais apropriado para tratar de *web scraping* em portugês é "raspagem 
 
 Quando se trata de web scraping, a primeira coisa que precisamos fazer é criar um plano de ação. Raspar dados online não é uma ciência exata, então se não nos planejarmos com antecedência é bem provável que no final nosso código fique completamente incompreensível e irreprodutível.
 
-### Expectativa
+### Expectativa vs. Realidade
 
-```
+```{r, eval = FALSE}
 dados <- raspar("site.com")
 ```
 
-### Realidade
+--
 
-![](static/commits_esaj.png)
+<img src="static/commits_esaj.png" width="400">
 
 ---
 # Prólogo (cont.)
@@ -377,7 +377,6 @@ que desejamos extrair quando raspando uma página.
 
 ![](static/inspect.png)
 
-
 <!-- ### REPLICAR ######################################################### -->
 
 ---
@@ -419,6 +418,15 @@ internet
 O protocolo HTTP na verdade é composto por diversos **métodos** que chamam
 páginas páginas hipertexto de servidores web. Os métodos mais comuns são
 `GET` e `POST`
+
+--
+
+## Pacote httr
+
+Em R, o pacote `httr` é o que faz a ponte de comunicação entre nossas requisições e as respectivas respostas.
+
+- Serve para mexer com requisições/respostas HTTP e URLs.
+- As principais funções são os métodos do protocolo `http`: GET, POST, content, cookies, write_disk, status_code.
 
 ### GET
 
@@ -503,6 +511,20 @@ get_2$cookies
 ### Content
 
 Este é o nosso objeto de interesse. Ele é o conteúdo HTML da página requisitada!
+
+--
+
+### Pacote xml2
+
+Uma vez com o HTML em mãos, é usando o pacote `xml2` que extraímos as informações que precisamos.
+
+- Esse pacote fornece uma interface simples e consistente para trabalhar com HTML/XML.
+- Suas principais funções são read_html, xml_find_all, xml_attrs, xml_text, xml_children, xml_parents, xml_siblings
+
+---
+
+## ler um html
+
 Se usarmos `read_html()` e as funções de XML que vimos anteriormente, podemos
 começar a extrair importantes dados da página.
 
@@ -678,26 +700,6 @@ A função `content` retorna o conteúdo de uma dada `response`.
 OBS: No caso o conteúdo era um `png`, por isso utilizamos o `writePNG()` pra guardar o conteúdo.
 
 ---
-# Pacote httr
-
-Até aqui o pacote httr já nos ajudou muito. Foi ele que fez a ponte de comunicação entre nossas requisições e as respectivas respostas.
-
-- Finalidade: ferramentas para mexer com requisições/respostas HTTP e URLs.
-- Principais funções: GET, POST, content, cookies, write_disk, status_code.
-
-Exercício: explore por cima a lista de todas as funções do `httr`. Encontre uma função que o professor não saiba para ferrar com ele.
-
----
-# Pacote xml2
-
-O pacote xml2 também apareceu frequentemente. Uma vez com o HTML em mãos, é a ele que recorremos para extrair as informações que precisamos.
-
-- Finalidade: interface simples e consistente para trabalhar com HTML/XML.
-- Principais funções: read_html, xml_find_all, xml_attrs, xml_text, xml_children, xml_parents, xml_siblings
-
-Exercício: explore por cima a lista de todas as funções do `xml2`. Encontre uma função que o professor não saiba para ferrar com ele.
-
----
 # Tidy Output
 
 Até o momento apenas extraímos o conteúdo das páginas e aprendemos a baixa-las, mas saber deixar esse conteúdo arrumadinho também é muito importante. Uma tabela em `html` extraída com `html_table` é muito legal, mas existem jeitos mais legais de guardar informação.
@@ -829,28 +831,6 @@ Exercícios:
 
 ---
 
-# Gabarito Exercício 1
-
-```{r}
-
-```
-
----
-
-# Gabarito Exercício 2
-
-```{r}
-
-```
-
----
-
-# Gabarito Exercício 3
-
-```{r}
-
-```
-
 <!-- ### ITERAR ########################################################### -->
 
 ---
@@ -919,7 +899,17 @@ Existem algumas maneiras de iterar uma função que faz _scraping_
 
 ---
 
-# EXEMPLO
+# Exemplo de `for`
+
+```{r, eval = FALSE}
+
+for(i in 1:10){
+  httr::GET(
+    paste0('http://example.webscraping.com/places/default/view/',i)
+  )
+}
+
+```
 
 ---
 
@@ -971,26 +961,207 @@ class: inverse, center, middle
 # VALIDAR (F)
 
 ---
-x Event validation e view state (asp)
- - TODO: PENSAR EM OUTRO EXEMPLO
-x Páginas jsp
- - TODO:  PENSAR EM OUTRO EXEMPLO
-x Evitar armadilhas (catpchas, etc)
- - bloqueio de IP
- - Hackear a URL (comentar)
 
-<!-- ### MISCELÂNEA ####################################################### -->
+# Validação
+
+Um dos passos mais importantes do _web scraping_ é verificar se a requisição que fizemos retornou exatamente o que queríamos. 
+
+--
+
+Entretanto, existem algumas características comuns a muitos _websites_ que dificultam essa parte do trabalho
+
+--
+
+Alguns sites bloqueiam IP's, enquanto outros, construídos em `.NET` ou renderizando parte do conteúdo em `javascript`, precisam de mais do que um simples `POST` para chegar onde queremos.
+
+---
+
+# Como evitar armadilhas | Bloqueio de IP
+
+_web scraping_, por fazer um monte de requisições automáticas, é um inimigo comum dos administradores de websites. Existem várias formas de _desincentivar_ o acesso automático, e o mais comum deles é o bloqueio de IP. 
+
+--
+
+A solução mais simples para o bloqueio de IP, que resolve um problema tanto do usuário quanto do servidor, é inserir uma pausa entre um download e outro. Em R, isso é feito usando a função `sleep`
+
+---
+
+# Como evitar armadilhas | Bloqueio de IP
+
+```{r, eval = FALSE}
+for(i in 1:10){
+  httr::GET(
+    paste0('http://example.webscraping.com/places/default/view/',i)
+  )
+  
+  sleep(1)
+}
+```
+
+---
+
+# Event validation e view state
+
+Sites feitos em `.NET` (os `.aspx` espalhados pela internet) muitas vezes usam parâmetros esquisitos nas requisições `POST`
+
+--
+
+Esses parâmetros não significam nada em particular, mas são importantes para que as requisições funcionem corretamente.
+
+---
+
+# Event validation e view state
+
+Isso acontece, por exemplo [neste site](http://www.ssp.sp.gov.br/Estatistica/Pesquisa.aspx).
+
+```{r, eval = FALSE}
+view_state <- r %>%
+  xml2::read_html() %>%
+  rvest::html_nodes("input[name='__VIEWSTATE']") %>%
+  rvest::html_attr("value")
+
+event_validation <- r %>%
+  xml2::read_html() %>%
+  rvest::html_nodes("input[name='__EVENTVALIDATION']") %>%
+  rvest::html_attr("value")
+```
 
 ---
 class: inverse, center, middle
-# MISCELÂNEA (C)
+
+# MISCELÂNEA
 
 ---
-x paralelização e distribuição (mcmapply)
-x lendo a imagem no R (pacote de ler jpeg ou wtv)
-x interpretando o conteudo
-x filtrando com magick
-x tesseract
-x decryptr
+# Paralelização e Distribuição
 
+### Paralelização
 
+Já aprendemos anteriormente a função `carefully()`, que permite a execução
+em paralelo de múltiplos downloads. Isso é possível porque, na realidade,
+o computador passa muito tempo da raspagem esperando o servidor entregar os
+arquivos necessários pra ele; esse tempo pode ser utilizado para começar
+a raspagem de outras páginas.
+
+O motor por trás da carefully é a função `mcmapply()` do pacote `parallel`:
+
+```{r}
+#> Unit: seconds
+#>          expr      min     mean   median      max
+#>  com_paralelo 1.831117 1.913419 1.906115 2.012591
+#>  sem_paralelo 3.249223 3.374113 3.375318 3.498316
+```
+
+Para tirar mais vantagem disso, podemos por exemplo alugar máquinas na GCP
+ou na AWS que tenham mais núcleos, possibilitando um grau maior de paralelismo.
+
+---
+# Paralelização e Distribuição (cont.)
+
+### Distribuição
+
+... No entando, uma única máquina com muitos núcleos de processamento terá
+um gargalo no acesso a disco, ou seja, ela não conseguirá escrever todos
+os arquivos que queremos salvar em seu disco rígido com eficiência suficiente.
+
+Por isso, podemos sincronizar várias máquinas virtuais para criar o que
+chamamos de *web scraper distribuído*.
+
+---
+### Distribuição (cont.)
+
+![](/static/distribuido.png)
+
+---
+# CAPTCHAs
+
+Quebrar CAPTCHAs muitas vezes se faz necessário quando raspando uma página da
+web. Existem muitas formas de fazer isso, desde pagar acessos para o
+*Death By Captcha* até criar os seus próprios modelos de visão computacional;
+aqui vamos falar de algumas das formas mais simples e eficazes.
+
+### Lendo a imagem
+
+```{r, echo = FALSE, message = FALSE}
+library(stringr)
+library(png)
+library(magick)
+library(base64enc)
+pag_signup <- paste0(
+  "http://example.webscraping.com/",
+  "places/default/user/register?_next=/places/default/index")
+```
+
+```{r}
+pag_signup %>%
+  GET() %>%
+  read_html() %>%
+  xml_find_first("//*[@id='recaptcha']//img") %>%
+  xml_attr("src") %>%
+  str_remove("data:image/png;base64,") %>%
+  base64decode() %>%
+  readPNG() %>%
+  writePNG("static/captcha.png")
+```
+
+---
+# CATPCHAs (cont.)
+
+### Tratando imagens com magick
+
+![](/static/captcha.png)
+
+```{r}
+"static/captcha.png" %>%
+  image_read() %>%
+  image_transparent("green", fuzz = 20) %>%
+  image_transparent("blue", fuzz = 50) %>%
+  image_transparent("red", fuzz = 50) %>%
+  image_transparent("white", fuzz = 50) %>%
+  image_quantize(2) %>%
+  image_write("static/captcha_clean.png")
+```
+
+---
+# CATPCHAs (cont.)
+
+### Lendo o texto com tesseract
+
+![](/static/captcha_clean.png)
+
+```{r}
+"static/captcha_clean.png" %>%
+  image_read() %>%
+  image_background("white") %>% 
+  image_ocr()
+```
+
+Muitas vezes pode ser necessário tratar ainda mais a imagem antes de passar o OCR.
+Para melhorar o acerto, tente aumentar, diminuir, filtrar as cores, borrar,
+desborrar, reduzir o barulho...
+
+---
+# CATPCHAs (cont.)
+
+### Decryptr
+
+Quando temos que lidar com imagens mais complicadas que as dos slides anteriores
+(principalmente quando as letras desejadas não estão em preto), pode ser que
+precisemos criar um modelo de *deep learning* para quebrar os CAPTCHAs.
+
+Ensinar modelos desse tipo está fora do escopo da aula, mas nós criamos um pacote
+que já vem carregado com alguns modelos pré-prontos. Ele também pode te ajudar a
+criar seus próprios modelos.
+
+![](static/captcha10f4c43cd3747.png)
+
+```{r, echo = FALSE}
+arq <- "static/captcha10f4c43cd3747.png"
+```
+
+```{r, message=FALSE, warning=FALSE, eval = FALSE}
+decrypt(arq, model = "rfb")
+```
+
+---
+class: inverse, center, middle
+# OBRIGADO
